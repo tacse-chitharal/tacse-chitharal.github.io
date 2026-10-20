@@ -50,9 +50,19 @@ const kural = kurals[0];
         </p>
 
         <div class="mt-6 max-w-lg border-l-[3px] border-gold-400 pl-4">
-          <p class="tamil text-[0.95rem] font-medium text-navy-700" lang="ta">
-            {kural.tamil.replace('\n', ' ')}
-            <span class="font-sans text-sm text-gold-600">({kural.number})</span>
+          <!-- Set as a kural is printed: four words, then three, with the number
+               after the second line. -->
+          <p class="tamil text-[0.875rem] font-medium text-navy-700 sm:text-[0.95rem]" lang="ta">
+            {
+              kural.tamil.split('\n').map((line, index, lines) => (
+                <span class="block">
+                  {line}
+                  {index === lines.length - 1 && (
+                    <span class="ml-1 font-sans text-xs text-gold-600 sm:text-sm">({kural.number})</span>
+                  )}
+                </span>
+              ))
+            }
           </p>
           <p class="mt-1.5 font-display text-[0.95rem] italic leading-relaxed text-ink-soft">
             “{kural.english}”
