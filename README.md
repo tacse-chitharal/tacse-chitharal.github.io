@@ -52,7 +52,7 @@ them there if they ever change; every page picks up the new values.
 ### 3. The published address — done
 
 The address is set automatically by the GitHub Pages deploy. The default in
-`astro.config.mjs` (`https://tacsechitharal-star.github.io`) is only used for
+`astro.config.mjs` (`https://tacse-chitharal.github.io`) is only used for
 local builds.
 
 ---
@@ -88,9 +88,9 @@ permissions.
 ## Publishing it, free
 
 The site is hosted on **GitHub Pages** from the Academy's own GitHub account,
-`tacsechitharal-star`, at:
+`tacse-chitharal`, at:
 
-**https://tacsechitharal-star.github.io/**
+**https://tacse-chitharal.github.io/**
 
 It republishes itself. Every push to the `main` branch runs
 `.github/workflows/deploy.yml`, which builds the site and puts it live, usually

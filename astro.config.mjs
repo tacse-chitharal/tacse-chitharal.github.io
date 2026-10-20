@@ -13,7 +13,7 @@ import tailwindcss from '@tailwindcss/vite';
 // The GitHub Pages deploy sets both (see .github/workflows/deploy.yml);
 // everything else, including `npm run dev`, uses the defaults below.
 export default defineConfig({
-  site: process.env.SITE_URL ?? 'https://tacsechitharal-star.github.io',
+  site: process.env.SITE_URL ?? 'https://tacse-chitharal.github.io',
   base: process.env.BASE_PATH ?? '/',
   output: 'static',
   integrations: [sitemap()],
