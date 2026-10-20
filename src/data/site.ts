@@ -10,7 +10,7 @@ export const site = {
   district: 'Kanniyakumari District, Tamil Nadu',
   tagline: 'Affordable, community-driven coaching for rural youth and aspiring civil servants in Chitharal.',
   description:
-    'A non-profit academy in Chitharal preparing rural students for UPSC, TNPSC, SSC, Banking, Police and NDA examinations. Library, classes and fortnightly mock tests for ₹500 a month.',
+    'A non-profit academy in Chitharal preparing rural students for UPSC, TNPSC, SSC, Banking, Police and NDA examinations. Library, classes and fortnightly mock tests for ₹1500 a month.',
 
   // ---------------------------------------------------------------------
   // CONTACT DETAILS
