@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+import { schedule } from '../data/site';
+
+const slots: { icon: IconName; time: string; label: string }[] = [
+  { icon: 'book', time: schedule.library.time, label: schedule.library.label },
+  { icon: 'board', time: schedule.classes.time, label: schedule.classes.label },
+  { icon: 'clipboard', time: 'Fortnightly Mock Tests', label: 'With performance review' },
+];
+---
+
+<div class="rounded-2xl bg-navy-50 p-4 sm:p-5">
+  <div class="grid gap-3 divide-y divide-navy-100 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-y-0">
+    {
+      slots.map((slot) => (
+        <div class="flex items-center gap-4 px-2 pt-3 first:pt-0 sm:px-5 sm:pt-0">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+            <Icon name={slot.icon} class="h-[22px] w-[22px]" />
+          </span>
+          <div>
+            <p class="font-semibold leading-tight text-navy-700">{slot.time}</p>
+            <p class="mt-0.5 text-sm text-ink-soft">{slot.label}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>

@@ -1,0 +1,35 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+import { courses } from '../data/courses';
+import { schedule } from '../data/site';
+
+const stats: { icon: IconName; value: string; suffix?: string; label: string }[] = [
+  { icon: 'graduation', value: String(courses.length), label: 'Competitive Exam Pathways' },
+  { icon: 'calendar', value: '6', label: 'Days a Week' },
+  { icon: 'rupee', value: schedule.fee, suffix: schedule.feePeriod, label: 'Tuition fee, all inclusive' },
+];
+---
+
+<section class="container-page -mt-px">
+  <div class="rounded-2xl border border-navy-100 bg-navy-50 px-4 py-6 sm:px-8 sm:py-7">
+    <dl class="grid gap-6 divide-y divide-navy-100 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-y-0">
+      {
+        stats.map((stat) => (
+          <div class="flex items-center gap-4 pt-6 first:pt-0 sm:justify-center sm:px-4 sm:pt-0">
+            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+              <Icon name={stat.icon} class="h-6 w-6" />
+            </span>
+            <div>
+              <dd class="font-display text-[1.65rem] font-bold leading-none text-navy-700">
+                {stat.value}
+                {stat.suffix && <span class="text-base font-semibold text-ink-soft"> {stat.suffix}</span>}
+              </dd>
+              <dt class="mt-1 text-sm font-medium text-ink-soft">{stat.label}</dt>
+            </div>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

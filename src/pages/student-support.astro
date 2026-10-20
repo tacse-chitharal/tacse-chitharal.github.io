@@ -1,0 +1,205 @@
+---
+import { withBase } from '../lib/links';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/icons';
+import { site } from '../data/site';
+
+const services: { icon: IconName; title: string; body: string; id: string }[] = [
+  {
+    id: 'admission',
+    icon: 'graduation',
+    title: 'Course admission & registration',
+    body: 'Open to higher secondary (+2) and degree holders aspiring for public service. There is no entrance test. Submit the application form, and a coordinator will telephone you to confirm your batch and starting date.',
+  },
+  {
+    id: 'financial-aid',
+    icon: 'heart',
+    title: 'Financial aid & fee waivers',
+    body: 'Full or partial fee waivers are arranged for economically disadvantaged rural students, orphans and single-parent households, after a review of family employment and background. Requesting one has no bearing on whether you are admitted.',
+  },
+  {
+    id: 'counselling',
+    icon: 'compass',
+    title: 'Counselling & career guidance',
+    body: 'One-to-one mentoring covering higher education pathways, university admissions and private-sector skill development — so that a candidate who does not clear an examination this year still has a next step mapped out.',
+  },
+];
+
+const counsellingPoints = [
+  'Which examinations your qualification and age actually make you eligible for',
+  'Choosing between two examinations when the syllabus overlaps',
+  'University admissions and distance-education options alongside preparation',
+  'Private-sector and skill-development routes as a parallel plan',
+  'What to do after an unsuccessful attempt, and whether to sit again',
+];
+
+const aidCriteria = [
+  'Economically disadvantaged rural households',
+  'Orphaned candidates',
+  'Single-parent households',
+  'Families where the earning member is unable to work',
+];
+---
+
+<BaseLayout
+  title="Student Support"
+  description="Admission and registration, fee waivers for disadvantaged rural students, and one-to-one career counselling at the Thiruvalluvar Academy, Chitharal."
+>
+  <PageHeader
+    eyebrow="Student Support Desk"
+    title="Help with the parts of preparation that are not on the syllabus"
+    description="Admission, money, and the question of what to do next — the three things that stop capable rural candidates more often than the examination itself."
+  />
+
+  <!-- Services -->
+  <section class="container-page py-14">
+    <div class="grid gap-5 lg:grid-cols-3">
+      {
+        services.map((service, index) => (
+          <article id={service.id} class="card scroll-mt-28 p-6">
+            <div class="flex items-start justify-between gap-4">
+              <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+                <Icon name={service.icon} class="h-6 w-6" />
+              </span>
+              <span class="font-display text-3xl font-bold text-cream-300">{index + 1}</span>
+            </div>
+            <h2 class="mt-4 text-[1.2rem] font-bold leading-snug">{service.title}</h2>
+            <p class="mt-2.5 leading-relaxed text-ink-soft">{service.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Financial aid -->
+  <section class="border-y border-cream-300 bg-cream-100 py-16">
+    <div class="container-page">
+      <div class="grid gap-10 lg:grid-cols-2 lg:gap-14">
+        <div>
+          <h2 class="text-2xl font-bold sm:text-[1.75rem]">Fee concessions, explained plainly</h2>
+          <div class="prose-page mt-4">
+            <p>
+              The fee is <strong>₹500 a month</strong>, and it exists only to cover utilities and
+              study material. For a household where that ₹500 is the difference between a student
+              attending and not attending, we would rather have the student.
+            </p>
+            <p>
+              Write your circumstances on the application form, in the fee concession section. A
+              trustee reviews each request privately against family employment and background. You
+              will be told the outcome when the Academy telephones you about your batch — nobody is
+              asked to discuss it in front of other students.
+            </p>
+            <p>
+              <strong>Requesting a concession never affects admission.</strong> It is a separate
+              decision, taken after you have your seat.
+            </p>
+          </div>
+
+          <div class="mt-7 rounded-xl border border-gold-200 bg-gold-50 p-5">
+            <h3 class="flex items-center gap-2 text-base font-bold text-gold-700">
+              <Icon name="alert" class="h-[18px] w-[18px]" />
+              One thing we will never ask for
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-gold-700">
+              The Academy does not solicit or accept donations, from families or from the public. If
+              anybody asks you for money in the Academy's name beyond the monthly fee, please
+              telephone us at once on
+              <a class="font-semibold underline underline-offset-2" href={site.phoneHref}>{site.phone}</a>.
+            </p>
+          </div>
+        </div>
+
+        <div class="card h-fit p-6">
+          <h3 class="text-lg font-bold">Waivers are arranged for</h3>
+          <ul class="mt-4 space-y-3">
+            {
+              aidCriteria.map((criterion) => (
+                <li class="flex gap-3">
+                  <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                    <Icon name="check" class="h-3.5 w-3.5" />
+                  </span>
+                  <span class="leading-relaxed text-ink-soft">{criterion}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-5 border-t border-cream-200 pt-4 text-sm leading-relaxed text-ink-soft">
+            If your situation is not on this list but the fee is still beyond your family, tell us
+            anyway. The list is a guide, not a rule.
+          </p>
+          <a href={withBase('/apply/#application-form')} class="btn btn-primary mt-5 w-full">
+            Request a concession on the form
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Counselling -->
+  <section class="container-page py-16">
+    <SectionHeading
+      title="Career Counselling Appointments"
+      subtitle="Held weekly during library hours, 10:00 AM to 1:00 PM. Open to enrolled students and to anybody in the community considering public service."
+    />
+
+    <div class="mt-9 grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-14">
+      <div>
+        <h3 class="text-xl font-bold">What a session covers</h3>
+        <ul class="mt-4 space-y-3">
+          {
+            counsellingPoints.map((point) => (
+              <li class="flex gap-3">
+                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-navy-100 text-navy-600">
+                  <Icon name="check" class="h-3.5 w-3.5" />
+                </span>
+                <span class="leading-relaxed text-ink-soft">{point}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="prose-page mt-6">
+          Sessions are one-to-one and last about half an hour. Parents are welcome to sit in — in
+          our experience, a decision the family understands is a decision the student can actually
+          follow through.
+        </p>
+      </div>
+
+      <div class="card h-fit overflow-hidden">
+        <div class="bg-navy-700 px-5 py-4">
+          <h3 class="text-base font-bold text-white">Book an appointment</h3>
+        </div>
+        <div class="p-5">
+          <p class="text-sm leading-relaxed text-ink-soft">
+            There is no formal booking system. Either walk in during library hours, or send us a
+            message and we will keep a slot for you.
+          </p>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li class="flex gap-3">
+              <Icon name="phone" class="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+              <a class="font-semibold text-navy-700 hover:text-navy-500" href={site.phoneHref}>
+                {site.phone}
+              </a>
+            </li>
+            <li class="flex gap-3">
+              <Icon name="mail" class="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+              <a class="break-all font-semibold text-navy-700 hover:text-navy-500" href={`mailto:${site.email}`}>
+                {site.email}
+              </a>
+            </li>
+            <li class="flex gap-3">
+              <Icon name="clock" class="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+              <span class="text-ink-soft">Weekly, 10:00 AM – 1:00 PM</span>
+            </li>
+          </ul>
+          <a href={withBase('/contact/#enquiry-form')} class="btn btn-outline mt-5 w-full">
+            Send a message
+            <Icon name="arrow-right" class="h-[18px] w-[18px]" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

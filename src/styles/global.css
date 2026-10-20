@@ -1,0 +1,210 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+   The palette is drawn from the Academy's own identity: the deep institutional
+   navy of a government seal, the gold of a Thirukkural manuscript, and a warm
+   paper cream so long reading sessions on a cheap phone screen stay easy.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-navy-50: #eef3fb;
+  --color-navy-100: #dbe5f5;
+  --color-navy-200: #b9cbea;
+  --color-navy-300: #8aa7d8;
+  --color-navy-400: #5478bb;
+  --color-navy-500: #2f5497;
+  --color-navy-600: #1d4079;
+  --color-navy-700: #16366b;
+  --color-navy-800: #112a53;
+  --color-navy-900: #0c1d3a;
+
+  --color-gold-50: #fdf8ec;
+  --color-gold-100: #f8edd0;
+  --color-gold-200: #f0d99c;
+  --color-gold-300: #e4c068;
+  --color-gold-400: #d4a843;
+  --color-gold-500: #c08f2b;
+  --color-gold-600: #9c7022;
+  --color-gold-700: #78551c;
+
+  --color-cream-50: #fdfaf3;
+  --color-cream-100: #faf5e9;
+  --color-cream-200: #f5ecd8;
+  --color-cream-300: #ecdfc2;
+
+  --color-ink: #1b2535;
+  --color-ink-soft: #4a5567;
+
+  --font-display: 'Source Serif 4', 'Noto Serif', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-tamil: 'Noto Sans Tamil', 'Latha', sans-serif;
+
+  --shadow-card: 0 1px 2px rgb(16 32 64 / 0.04), 0 8px 24px -12px rgb(16 32 64 / 0.16);
+  --shadow-lift: 0 2px 4px rgb(16 32 64 / 0.06), 0 18px 40px -16px rgb(16 32 64 / 0.26);
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* The sticky header is 76px tall; stop in-page anchors from hiding under it. */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-cream-50);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-navy-700);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-gold-400);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-gold-200);
+    color: var(--color-navy-800);
+  }
+}
+
+/* Tamil text needs a little extra line height to keep the vowel marks clear. */
+@utility tamil {
+  font-family: var(--font-tamil);
+  line-height: 1.85;
+}
+
+/* ---------------------------------------------------------------------------
+   Reusable pieces
+--------------------------------------------------------------------------- */
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 76rem;
+  padding-inline: 1.25rem;
+}
+
+/* The gold rule that frames every section heading in the Academy's print material. */
+@utility rule-gold {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--color-gold-300) 20%,
+    var(--color-gold-400) 50%,
+    var(--color-gold-300) 80%,
+    transparent
+  );
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    font-size: 0.975rem;
+    line-height: 1.2;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease,
+      border-color 150ms ease,
+      box-shadow 150ms ease,
+      transform 150ms ease;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn-primary {
+    background-color: var(--color-navy-700);
+    color: #fff;
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-navy-800);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .btn-outline {
+    background-color: #fff;
+    color: var(--color-navy-700);
+    border: 1.5px solid var(--color-navy-200);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--color-navy-500);
+    background-color: var(--color-navy-50);
+  }
+
+  .btn-gold {
+    background-color: var(--color-gold-400);
+    color: var(--color-navy-900);
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn-gold:hover {
+    background-color: var(--color-gold-300);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .card {
+    background-color: #fff;
+    border: 1px solid var(--color-cream-300);
+    border-radius: 0.875rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Long-form text blocks on the About / Support pages. */
+  .prose-page {
+    color: var(--color-ink-soft);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  .prose-page p + p {
+    margin-top: 1rem;
+  }
+
+  .prose-page strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

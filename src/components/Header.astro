@@ -1,0 +1,131 @@
+---
+import { withBase } from '../lib/links';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav, site } from '../data/site';
+
+const path = Astro.url.pathname;
+
+/** "/courses/" matches /courses/ and /courses/upsc/; "/" matches only the home page. */
+const trim = (p: string) => p.replace(/\/+$/, '');
+const isActive = (href: string) =>
+  href === '/' ? trim(path) === trim(withBase('/')) : path.startsWith(withBase(href));
+---
+
+<header class="sticky top-0 z-50 border-b border-cream-300 bg-cream-50/95 backdrop-blur-sm">
+  <div class="container-page flex h-[4.75rem] items-center justify-between gap-4">
+    <!-- Identity -->
+    <a href={withBase('/')} class="flex shrink-0 items-center gap-3" aria-label={`${site.shortName} — home`}>
+      <Logo class="h-11 w-11 shrink-0" />
+      <span class="flex items-center gap-3">
+        <span class="font-display text-2xl font-bold tracking-tight text-navy-700 sm:text-[1.7rem]">
+          {site.shortName}
+        </span>
+        <span class="hidden h-9 w-px bg-cream-300 lg:block"></span>
+        <span class="hidden leading-tight lg:block">
+          <span class="block max-w-[13.5rem] text-[0.78rem] font-semibold leading-snug text-navy-700">
+            {site.name}
+          </span>
+          <span class="block text-[0.72rem] font-medium text-gold-600">{site.location}</span>
+        </span>
+      </span>
+    </a>
+
+    <!-- Desktop navigation -->
+    <nav class="hidden items-center gap-1 xl:flex" aria-label="Main">
+      {
+        nav.map((item) => (
+          <a
+            href={withBase(item.href)}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'relative whitespace-nowrap rounded-md px-3 py-2 text-[0.9rem] font-medium transition-colors',
+              isActive(item.href)
+                ? 'text-navy-700'
+                : 'text-ink-soft hover:bg-navy-50 hover:text-navy-700',
+            ]}
+          >
+            {item.label}
+            {isActive(item.href) && (
+              <span class="absolute inset-x-3 -bottom-0.5 h-[3px] rounded-full bg-gold-400" />
+            )}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={withBase('/apply/')}
+        class="btn btn-primary hidden whitespace-nowrap !rounded-full !px-6 !py-2.5 sm:inline-flex"
+      >
+        Apply for Admission
+      </a>
+
+      <!-- Mobile menu trigger -->
+      <button
+        type="button"
+        id="nav-toggle"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-cream-300 bg-white text-navy-700 xl:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <span class="sr-only">Open menu</span>
+        <Icon name="menu" class="h-5 w-5" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile navigation -->
+  <nav
+    id="mobile-nav"
+    class="hidden border-t border-cream-300 bg-cream-50 xl:!hidden"
+    aria-label="Main"
+  >
+    <div class="container-page flex flex-col py-3">
+      {
+        nav.map((item) => (
+          <a
+            href={withBase(item.href)}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'rounded-lg border-l-[3px] px-4 py-3 text-[0.95rem] font-medium transition-colors',
+              isActive(item.href)
+                ? 'border-gold-400 bg-white text-navy-700'
+                : 'border-transparent text-ink-soft hover:bg-white hover:text-navy-700',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a href={withBase('/apply/')} class="btn btn-primary mt-3">Apply for Admission</a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mobile-nav');
+  const icon = toggle?.querySelector('svg');
+
+  const closedPath = 'M4 7h16M4 12h16M4 17h16';
+  const openPath = 'M6.5 6.5l11 11M17.5 6.5l-11 11';
+
+  toggle?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.sr-only')!.textContent = open ? 'Close menu' : 'Open menu';
+    icon?.querySelector('path')?.setAttribute('d', open ? openPath : closedPath);
+  });
+
+  // Close the menu when the viewport grows past the mobile breakpoint, so the
+  // page never gets stuck showing both navigations at once.
+  window.matchMedia('(min-width: 1280px)').addEventListener('change', (event) => {
+    if (event.matches) {
+      menu?.classList.add('hidden');
+      toggle?.setAttribute('aria-expanded', 'false');
+      icon?.querySelector('path')?.setAttribute('d', closedPath);
+    }
+  });
+</script>

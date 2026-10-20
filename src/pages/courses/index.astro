@@ -1,0 +1,106 @@
+---
+import { withBase } from '../../lib/links';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import Icon from '../../components/Icon.astro';
+import { courses } from '../../data/courses';
+---
+
+<BaseLayout
+  title="Coaching Programmes"
+  description="Ten competitive examination programmes — UPSC, SSC, Banking, TNPSC Groups 1, 2, 4 and VAO, TNUSRB Sub-Inspector, Police Constable and NDA — taught in Chitharal for ₹500 a month."
+>
+  <PageHeader
+    eyebrow="Coaching Programmes"
+    title="Ten examination pathways into public service"
+    description="Every programme is taught from the foundation upwards, six days a week, with a mock test every fortnight. The fee is the same ₹500 a month whichever you choose, and whichever combination you choose."
+  />
+
+  <!-- At a glance -->
+  <section class="container-page py-14">
+    <SectionHeading
+      title="At a Glance"
+      subtitle="The full list, with the cadre each examination leads to and how long we prepare for it."
+    />
+
+    <div class="mt-8 overflow-hidden rounded-2xl border border-cream-300 bg-white shadow-[var(--shadow-card)]">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[42rem] border-collapse text-left text-sm">
+          <caption class="sr-only">Examination programmes offered by the Academy</caption>
+          <thead>
+            <tr class="bg-navy-700 text-white">
+              <th scope="col" class="w-12 px-4 py-3.5 font-semibold">#</th>
+              <th scope="col" class="px-4 py-3.5 font-semibold">Examination / Stream</th>
+              <th scope="col" class="px-4 py-3.5 font-semibold">Focus / Target Cadre</th>
+              <th scope="col" class="px-4 py-3.5 font-semibold">Duration</th>
+              <th scope="col" class="px-4 py-3.5"><span class="sr-only">Details</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-cream-200">
+            {
+              courses.map((course, index) => (
+                <tr class="transition-colors hover:bg-navy-50">
+                  <td class="px-4 py-3.5 font-semibold text-gold-600">{index + 1}</td>
+                  <th scope="row" class="px-4 py-3.5 font-semibold text-navy-700">
+                    {course.name}
+                  </th>
+                  <td class="px-4 py-3.5 text-ink-soft">{course.target}</td>
+                  <td class="whitespace-nowrap px-4 py-3.5 text-ink-soft">{course.duration}</td>
+                  <td class="px-4 py-3.5 text-right">
+                    <a
+                      class="inline-flex items-center gap-1.5 font-semibold text-navy-700 hover:text-navy-500"
+                      href={withBase(`/courses/${course.id}/`)}
+                    >
+                      Details
+                      <Icon name="arrow-right" class="h-4 w-4" />
+                      <span class="sr-only">about {course.name}</span>
+                    </a>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="mt-4 text-center text-sm text-ink-soft">
+      Durations are the taught portion. Students are welcome to keep using the library after their
+      batch ends, at no further cost.
+    </p>
+  </section>
+
+  <!-- Cards -->
+  <section class="border-t border-cream-300 bg-cream-100 py-16">
+    <div class="container-page">
+      <SectionHeading
+        title="Every Programme in Detail"
+        subtitle="Choose one, or more than one — many of our students prepare for TNPSC and SSC together, because the syllabus overlaps."
+      />
+
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {courses.map((course) => <CourseCard course={course} variant="full" />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container-page py-16">
+    <div class="rounded-2xl bg-navy-700 px-6 py-11 text-center sm:px-12">
+      <h2 class="text-2xl font-bold text-white">Not sure which examination suits you?</h2>
+      <p class="mx-auto mt-3 max-w-xl leading-relaxed text-navy-100">
+        Come to the Academy during library hours and ask. Our counselling sessions exist precisely
+        for this — to match your qualification, your age and your circumstances to the
+        examinations you have a real chance at.
+      </p>
+      <div class="mt-7 flex flex-wrap justify-center gap-3">
+        <a href={withBase('/student-support/')} class="btn btn-gold">Book career counselling</a>
+        <a href={withBase('/apply/')} class="btn !border !border-navy-400 !bg-transparent !text-white hover:!bg-navy-600">
+          Apply for Admission
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

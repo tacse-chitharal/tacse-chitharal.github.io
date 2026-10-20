@@ -1,0 +1,182 @@
+---
+import { withBase } from '../../lib/links';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Icon from '../../components/Icon.astro';
+import ScheduleStrip from '../../components/ScheduleStrip.astro';
+import { courses } from '../../data/courses';
+import { schedule } from '../../data/site';
+
+export function getStaticPaths() {
+  return courses.map((course) => ({
+    params: { course: course.id },
+    props: { course },
+  }));
+}
+
+const { course } = Astro.props;
+
+const index = courses.findIndex((item) => item.id === course.id);
+const previous = courses[index - 1];
+const next = courses[index + 1];
+
+const related = courses.filter((item) => item.id !== course.id && item.accent === course.accent).slice(0, 3);
+---
+
+<BaseLayout
+  title={course.name}
+  description={`${course.name} coaching in Chitharal — ${course.target}. Duration ${course.duration}, ₹500 per month, six days a week with fortnightly mock tests.`}
+>
+  <PageHeader eyebrow="Coaching Programme" title={course.name} description={course.summary} />
+
+  <section class="container-page py-14">
+    <nav aria-label="Breadcrumb" class="mb-8 text-sm text-ink-soft">
+      <ol class="flex flex-wrap items-center gap-2">
+        <li><a class="hover:text-navy-700" href={withBase('/')}>Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a class="hover:text-navy-700" href={withBase('/courses/')}>Courses</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="font-medium text-navy-700" aria-current="page">{course.name}</li>
+      </ol>
+    </nav>
+
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] lg:gap-12">
+      <!-- Main -->
+      <div>
+        <h2 class="text-2xl font-bold">What this programme covers</h2>
+        <ul class="mt-5 space-y-3.5">
+          {
+            course.highlights.map((highlight) => (
+              <li class="flex gap-3">
+                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                  <Icon name="check" class="h-3.5 w-3.5" />
+                </span>
+                <span class="leading-relaxed text-ink-soft">{highlight}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <h2 class="mt-11 text-2xl font-bold">How the day runs</h2>
+        <p class="prose-page mt-3">
+          Every programme shares the same daily rhythm. Mornings are for reading on your own in the
+          library, afternoons for teaching, and every second week for a full-length test under exam
+          conditions.
+        </p>
+        <div class="mt-6">
+          <ScheduleStrip />
+        </div>
+
+        <h2 class="mt-11 text-2xl font-bold">Who can join</h2>
+        <p class="prose-page mt-3">
+          Admission is open to candidates who have completed higher secondary (+2) or hold a degree
+          and intend to sit for public service examinations. There is no entrance test. Where a
+          particular examination sets its own age, education or physical standards, we will tell you
+          plainly during counselling whether you are eligible, before you enrol.
+        </p>
+
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a href={withBase(`/apply/?course=${course.id}`)} class="btn btn-primary">
+            Apply for this programme
+            <Icon name="arrow-right" class="h-[18px] w-[18px]" />
+          </a>
+          <a href={withBase('/contact/')} class="btn btn-outline">Ask a question first</a>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-5 lg:sticky lg:top-28 lg:self-start">
+        <div class="card overflow-hidden">
+          <div class="bg-navy-700 px-5 py-4">
+            <h2 class="text-base font-bold text-white">Programme summary</h2>
+          </div>
+          <dl class="divide-y divide-cream-200 px-5 py-1 text-sm">
+            <div class="py-3.5">
+              <dt class="text-ink-soft">Target cadre</dt>
+              <dd class="mt-1 font-semibold text-navy-700">{course.target}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">Duration</dt>
+              <dd class="font-semibold text-navy-700">{course.duration}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">Fee</dt>
+              <dd class="font-semibold text-navy-700">{schedule.fee} {schedule.feePeriod}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">Class days</dt>
+              <dd class="font-semibold text-navy-700">{schedule.days}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">Assessment</dt>
+              <dd class="font-semibold text-navy-700">Fortnightly</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="rounded-2xl border border-gold-200 bg-gold-50 p-5">
+          <h2 class="flex items-center gap-2 text-base font-bold text-gold-700">
+            <Icon name="heart" class="h-[18px] w-[18px]" />
+            Cannot afford the fee?
+          </h2>
+          <p class="mt-2 text-sm leading-relaxed text-gold-700">
+            Full and partial waivers are arranged for economically disadvantaged rural students,
+            orphans and single-parent households. Ask on the application form — it will not affect
+            your admission.
+          </p>
+          <a
+            href={withBase('/student-support/#financial-aid')}
+            class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-gold-700 underline underline-offset-4"
+          >
+            How fee waivers work
+            <Icon name="arrow-right" class="h-4 w-4" />
+          </a>
+        </div>
+
+        {
+          related.length > 0 && (
+            <div class="card p-5">
+              <h2 class="text-base font-bold">Students often combine this with</h2>
+              <ul class="mt-3 space-y-2.5 text-sm">
+                {related.map((item) => (
+                  <li>
+                    <a
+                      class="flex items-center justify-between gap-3 text-navy-700 hover:text-navy-500"
+                      href={withBase(`/courses/${item.id}/`)}
+                    >
+                      <span class="font-medium">{item.name}</span>
+                      <Icon name="arrow-right" class="h-4 w-4 shrink-0" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+
+    <!-- Previous / next -->
+    <nav
+      class="mt-14 flex flex-col gap-3 border-t border-cream-300 pt-6 sm:flex-row sm:justify-between"
+      aria-label="Other programmes"
+    >
+      {
+        previous ? (
+          <a class="text-sm text-ink-soft hover:text-navy-700" href={withBase(`/courses/${previous.id}/`)}>
+            ← {previous.name}
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a class="text-sm text-ink-soft hover:text-navy-700 sm:text-right" href={withBase(`/courses/${next.id}/`)}>
+            {next.name} →
+          </a>
+        )
+      }
+    </nav>
+  </section>
+</BaseLayout>

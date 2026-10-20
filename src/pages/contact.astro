@@ -1,0 +1,126 @@
+---
+import { withBase } from '../lib/links';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Icon from '../components/Icon.astro';
+import { schedule, site } from '../data/site';
+---
+
+<BaseLayout
+  title="Contact"
+  description={`Reach the Thiruvalluvar Academy for Civil Service Exam in ${site.location}. Open six days a week, library 10 AM to 1 PM and classes 2 PM to 5 PM.`}
+>
+  <PageHeader
+    eyebrow="Contact"
+    title="Come and see the Academy"
+    description="The simplest way to understand how we work is to walk in during library hours and look. No appointment is needed, and nobody will ask you to enrol on the spot."
+  />
+
+  <section class="container-page py-14">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-14">
+      <!-- Details -->
+      <div class="space-y-5">
+        <div class="card p-6">
+          <h2 class="text-xl font-bold">Reach the Academy</h2>
+
+          <ul class="mt-5 space-y-5">
+            <li class="flex gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+                <Icon name="map-pin" class="h-[22px] w-[22px]" />
+              </span>
+              <div>
+                <p class="text-sm font-semibold text-navy-700">Address</p>
+                <address class="mt-1 text-sm not-italic leading-relaxed text-ink-soft">
+                  {site.address.line1}<br />
+                  {site.address.line2}<br />
+                  {site.address.line3}
+                </address>
+              </div>
+            </li>
+
+            <li class="flex gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+                <Icon name="phone" class="h-[22px] w-[22px]" />
+              </span>
+              <div>
+                <p class="text-sm font-semibold text-navy-700">Telephone</p>
+                <a class="mt-1 block text-sm text-ink-soft hover:text-navy-700" href={site.phoneHref}>
+                  {site.phone}
+                </a>
+                <p class="mt-1 text-xs text-ink-soft">Answered between 10 AM and 5 PM</p>
+              </div>
+            </li>
+
+            <li class="flex gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+                <Icon name="mail" class="h-[22px] w-[22px]" />
+              </span>
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-navy-700">E-mail</p>
+                <a
+                  class="mt-1 block break-all text-sm text-ink-soft hover:text-navy-700"
+                  href={`mailto:${site.email}`}
+                >
+                  {site.email}
+                </a>
+              </div>
+            </li>
+
+            <li class="flex gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+                <Icon name="clock" class="h-[22px] w-[22px]" />
+              </span>
+              <div>
+                <p class="text-sm font-semibold text-navy-700">When we are open</p>
+                <p class="mt-1 text-sm leading-relaxed text-ink-soft">
+                  {schedule.days}, Monday to Saturday<br />
+                  {schedule.library.label}: {schedule.library.time}<br />
+                  {schedule.classes.label}: {schedule.classes.time}
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="rounded-2xl border border-gold-200 bg-gold-50 p-6">
+          <h2 class="flex items-center gap-2 text-base font-bold text-gold-700">
+            <Icon name="graduation" class="h-5 w-5" />
+            Looking to enrol?
+          </h2>
+          <p class="mt-2 text-sm leading-relaxed text-gold-700">
+            You do not need to write to us first. The application form takes about five minutes and
+            reaches the Academy immediately.
+          </p>
+          <a href={withBase('/apply/')} class="btn btn-primary mt-4 w-full">Apply for Admission</a>
+        </div>
+
+        {
+          site.mapEmbedUrl && (
+            <div class="card overflow-hidden">
+              <iframe
+                src={site.mapEmbedUrl}
+                title={`Map showing ${site.name} in ${site.location}`}
+                class="h-72 w-full border-0"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Enquiry form -->
+      <div>
+        <h2 class="text-2xl font-bold sm:text-[1.75rem]">Send us a message</h2>
+        <p class="mt-2 leading-relaxed text-ink-soft">
+          Ask us anything about the programmes, the timings, the fee or a concession. You may write
+          in Tamil or English.
+        </p>
+        <div class="mt-6">
+          <EnquiryForm />
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

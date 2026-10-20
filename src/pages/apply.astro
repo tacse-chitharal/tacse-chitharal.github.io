@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ApplicationForm from '../components/ApplicationForm.astro';
+import Icon from '../components/Icon.astro';
+import { schedule, site } from '../data/site';
+
+const steps = [
+  {
+    title: 'Fill this form',
+    body: 'About five minutes. Keep your Aadhaar number and a mobile number you answer to hand.',
+  },
+  {
+    title: 'We telephone you',
+    body: 'Usually within three working days, to confirm your programme and the date your batch begins.',
+  },
+  {
+    title: 'Come to the Academy',
+    body: 'Bring your certificates for verification on the first day. Your timetable and reading list are given to you then.',
+  },
+];
+---
+
+<BaseLayout
+  title="Apply for Admission"
+  description="Online application for admission to the Thiruvalluvar Academy for Civil Service Exam, Chitharal. Open to +2 and degree holders. Fee ₹500 per month, with waivers available."
+>
+  <PageHeader
+    eyebrow="Online Application for Admission"
+    title="Apply for admission"
+    description="Open to higher secondary (+2) and degree holders aspiring for public service. There is no entrance test and no application fee."
+  />
+
+  <section class="container-page py-14">
+    <!-- How it works -->
+    <ol class="mb-12 grid gap-4 sm:grid-cols-3">
+      {
+        steps.map((step, index) => (
+          <li class="card relative p-5 pt-6">
+            <span class="absolute -top-3.5 left-5 flex h-7 w-7 items-center justify-center rounded-full bg-gold-400 text-sm font-bold text-navy-900">
+              {index + 1}
+            </span>
+            <h2 class="text-base font-bold">{step.title}</h2>
+            <p class="mt-1.5 text-sm leading-relaxed text-ink-soft">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.9fr)_minmax(0,1fr)] lg:gap-12">
+      <ApplicationForm />
+
+      <aside class="space-y-5 lg:sticky lg:top-28 lg:self-start">
+        <div class="card overflow-hidden">
+          <div class="bg-navy-700 px-5 py-4">
+            <h2 class="text-base font-bold text-white">Before you begin</h2>
+          </div>
+          <ul class="space-y-3.5 p-5 text-sm">
+            {
+              [
+                'Your Aadhaar number (12 digits)',
+                'A mobile number you answer',
+                'Your parent or guardian’s name and number',
+                'Which examination you want to prepare for',
+              ].map((item) => (
+                <li class="flex gap-3">
+                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-navy-100 text-navy-600">
+                    <Icon name="check" class="h-3 w-3" />
+                  </span>
+                  <span class="leading-relaxed text-ink-soft">{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="rounded-2xl border border-gold-200 bg-gold-50 p-5">
+          <h2 class="flex items-center gap-2 text-base font-bold text-gold-700">
+            <Icon name="rupee" class="h-[18px] w-[18px]" />
+            About the fee
+          </h2>
+          <p class="mt-2 text-sm leading-relaxed text-gold-700">
+            {schedule.fee} a month, covering utilities and study material. Nothing is payable to
+            apply. If the fee is beyond your family, say so in section 4 — it will not affect your
+            admission.
+          </p>
+        </div>
+
+        <div class="card p-5">
+          <h2 class="text-base font-bold">Would you rather apply in person?</h2>
+          <p class="mt-2 text-sm leading-relaxed text-ink-soft">
+            Printed application forms are available at the Academy during library hours, 10 AM to
+            1 PM, Monday to Saturday.
+          </p>
+          <ul class="mt-4 space-y-2.5 text-sm">
+            <li class="flex gap-3">
+              <Icon name="phone" class="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+              <a class="font-semibold text-navy-700 hover:text-navy-500" href={site.phoneHref}>
+                {site.phone}
+              </a>
+            </li>
+            <li class="flex gap-3">
+              <Icon name="map-pin" class="mt-0.5 h-4 w-4 shrink-0 text-gold-500" />
+              <span class="leading-relaxed text-ink-soft">
+                {site.address.line2}, {site.address.line3}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

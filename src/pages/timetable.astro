@@ -1,0 +1,193 @@
+---
+import { withBase } from '../lib/links';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/icons';
+import { schedule } from '../data/site';
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+const blocks: { icon: IconName; time: string; title: string; body: string; tone: 'gold' | 'navy' | 'green' }[] = [
+  {
+    icon: 'book',
+    time: '10:00 AM – 1:00 PM',
+    title: 'Library & self-study',
+    body: 'The reading room is open and quiet. Standard textbooks, previous-year question papers and the day’s newspapers are on the shelves. Staff are present for questions, and career counselling appointments are held in this window.',
+    tone: 'gold',
+  },
+  {
+    icon: 'board',
+    time: '2:00 PM – 5:00 PM',
+    title: 'Coaching & interactive classes',
+    body: 'Taught sessions for the day’s subject, followed by problem-solving aloud and a current-affairs discussion drawn from that morning’s newspaper. Questions are expected, not merely allowed.',
+    tone: 'navy',
+  },
+  {
+    icon: 'clipboard',
+    time: 'Every second week',
+    title: 'Mock test & performance review',
+    body: 'A full-length paper under examination conditions, marked and returned with a one-to-one review of where the marks were lost and what to read before the next test.',
+    tone: 'green',
+  },
+];
+
+const toneClasses = {
+  gold: 'bg-gold-100 text-gold-600',
+  navy: 'bg-navy-100 text-navy-600',
+  green: 'bg-emerald-100 text-emerald-700',
+};
+
+const fortnight = [
+  { week: 'Week 1', items: ['Mon – Fri: teaching blocks', 'Sat: revision & doubt clearing'] },
+  { week: 'Week 2', items: ['Mon – Fri: teaching blocks', 'Sat: full-length mock test'] },
+];
+---
+
+<BaseLayout
+  title="Timetable"
+  description="Library 10 AM to 1 PM, coaching classes 2 PM to 5 PM, six days a week, with a full-length mock test every fortnight. Fee ₹500 per month."
+>
+  <PageHeader
+    eyebrow="Daily Schedule & Structure"
+    title="The same shape every day, six days a week"
+    description="Consistency is what carries a candidate through a long preparation. The Academy keeps one simple rhythm so that studying becomes a habit rather than a decision you have to make each morning."
+  />
+
+  <!-- Daily blocks -->
+  <section class="container-page py-14">
+    <SectionHeading title="A Day at the Academy" />
+
+    <div class="mt-9 space-y-4">
+      {
+        blocks.map((block, index) => (
+          <div class="card flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:p-6">
+            <div class="flex items-center gap-4 sm:w-64 sm:shrink-0 sm:flex-col sm:items-start">
+              <span
+                class:list={[
+                  'flex h-12 w-12 shrink-0 items-center justify-center rounded-full',
+                  toneClasses[block.tone],
+                ]}
+              >
+                <Icon name={block.icon} class="h-6 w-6" />
+              </span>
+              <p class="font-display text-xl font-bold text-navy-700 sm:mt-1">{block.time}</p>
+            </div>
+
+            <div class="sm:border-l sm:border-cream-200 sm:pl-6">
+              <h3 class="text-[1.15rem] font-bold">
+                <span class="mr-2 text-sm font-semibold text-gold-600">{index + 1}.</span>
+                {block.title}
+              </h3>
+              <p class="mt-2 leading-relaxed text-ink-soft">{block.body}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Open days -->
+  <section class="border-y border-cream-300 bg-cream-100 py-16">
+    <div class="container-page">
+      <SectionHeading
+        title="Open Six Days a Week"
+        subtitle="Monday to Saturday. The Academy is closed on Sundays and on public holidays declared by the Government of Tamil Nadu."
+      />
+
+      <div class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+        {
+          days.map((day) => (
+            <div class="card p-4 text-center">
+              <p class="text-sm font-bold text-navy-700">{day}</p>
+              <p class="mt-2 text-xs leading-relaxed text-ink-soft">
+                Library 10–1
+                <br />
+                Classes 2–5
+              </p>
+              <span class="mt-3 inline-block h-1 w-8 rounded-full bg-gold-400" />
+            </div>
+          ))
+        }
+        <div class="card border-dashed bg-cream-50 p-4 text-center">
+          <p class="text-sm font-bold text-ink-soft">Sunday</p>
+          <p class="mt-2 text-xs leading-relaxed text-ink-soft">Closed</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fortnight cycle -->
+  <section class="container-page py-16">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-14">
+      <div>
+        <h2 class="text-2xl font-bold sm:text-[1.75rem]">How a fortnight is built</h2>
+        <p class="prose-page mt-4">
+          Teaching runs in a two-week cycle. The first Saturday is kept for revision and clearing
+          doubts from the fortnight's lessons; the second Saturday is a full-length mock test,
+          marked and returned with a written performance review.
+        </p>
+
+        <div class="mt-7 space-y-4">
+          {
+            fortnight.map((week) => (
+              <div class="card p-5">
+                <h3 class="flex items-center gap-2.5 text-base font-bold text-navy-700">
+                  <Icon name="calendar" class="h-[18px] w-[18px] text-gold-500" />
+                  {week.week}
+                </h3>
+                <ul class="mt-3 space-y-2 text-sm text-ink-soft">
+                  {week.items.map((item) => (
+                    <li class="flex gap-2.5">
+                      <span class="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-gold-400" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+
+        <p class="mt-6 rounded-xl border border-navy-100 bg-navy-50 p-4 text-sm leading-relaxed text-ink-soft">
+          <strong class="text-navy-700">Subject-wise timetables</strong> differ by programme and are
+          handed to you when your batch begins, along with the reading list for the first month.
+        </p>
+      </div>
+
+      <aside class="lg:pt-2">
+        <div class="card overflow-hidden">
+          <div class="bg-navy-700 px-5 py-4">
+            <h2 class="text-base font-bold text-white">Timings in brief</h2>
+          </div>
+          <dl class="divide-y divide-cream-200 px-5 py-1 text-sm">
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">Operating days</dt>
+              <dd class="font-semibold text-navy-700">{schedule.days}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">{schedule.library.label}</dt>
+              <dd class="font-semibold text-navy-700">{schedule.library.time}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">{schedule.classes.label}</dt>
+              <dd class="font-semibold text-navy-700">{schedule.classes.time}</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">Assessments</dt>
+              <dd class="font-semibold text-navy-700">Fortnightly</dd>
+            </div>
+            <div class="flex items-baseline justify-between gap-4 py-3.5">
+              <dt class="text-ink-soft">Tuition fee</dt>
+              <dd class="font-semibold text-navy-700">{schedule.fee} {schedule.feePeriod}</dd>
+            </div>
+          </dl>
+          <div class="border-t border-cream-200 p-5">
+            <a href={withBase('/apply/')} class="btn btn-primary w-full">Apply for Admission</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

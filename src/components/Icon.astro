@@ -1,0 +1,27 @@
+---
+import { iconPaths } from './icons';
+import type { IconName } from './icons';
+
+interface Props {
+  name: IconName;
+  class?: string;
+  /** For the few icons that read better as a solid shape than an outline. */
+  filled?: boolean;
+}
+
+const { name, class: className = 'h-6 w-6', filled = false } = Astro.props;
+---
+
+<svg
+  class={className}
+  viewBox="0 0 24 24"
+  fill={filled ? 'currentColor' : 'none'}
+  stroke={filled ? 'none' : 'currentColor'}
+  stroke-width="1.7"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={iconPaths[name]} />
+</svg>

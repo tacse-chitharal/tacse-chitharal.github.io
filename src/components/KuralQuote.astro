@@ -1,0 +1,43 @@
+---
+interface Props {
+  tamil: string;
+  number: string;
+  english: string;
+  tone?: 'light' | 'dark';
+}
+
+const { tamil, number, english, tone = 'light' } = Astro.props;
+
+const lines = tamil.split('\n');
+---
+
+<figure
+  class:list={[
+    'rounded-2xl border px-6 py-7 text-center sm:px-10',
+    tone === 'dark'
+      ? 'border-navy-500/60 bg-navy-800'
+      : 'border-gold-200 bg-gradient-to-b from-gold-50 to-cream-50',
+  ]}
+>
+  <blockquote>
+    <p class:list={['tamil text-lg font-medium', tone === 'dark' ? 'text-white' : 'text-navy-700']} lang="ta">
+      {lines.map((line) => <span class="block">{line}</span>)}
+    </p>
+    <p
+      class:list={[
+        'mx-auto mt-4 max-w-xl font-display text-[1.0625rem] italic leading-relaxed',
+        tone === 'dark' ? 'text-navy-100' : 'text-ink-soft',
+      ]}
+    >
+      “{english}”
+    </p>
+  </blockquote>
+  <figcaption
+    class:list={[
+      'mt-4 text-sm font-semibold uppercase tracking-[0.14em]',
+      tone === 'dark' ? 'text-gold-300' : 'text-gold-600',
+    ]}
+  >
+    {number}
+  </figcaption>
+</figure>

@@ -1,0 +1,130 @@
+---
+import Icon from './Icon.astro';
+import FormField from './FormField.astro';
+import { site } from '../data/site';
+import {
+  enquiryForm,
+  enquirySubjects,
+  formActionUrl,
+  formViewUrl,
+  isConfigured,
+} from '../config/google-forms';
+
+const connected = isConfigured(enquiryForm);
+const entries = enquiryForm.entries;
+const endpoint = connected ? formActionUrl(enquiryForm) : '';
+const directLink = connected ? formViewUrl(enquiryForm) : '';
+---
+
+<div data-google-form-root data-status="idle" id="enquiry-form" class="scroll-mt-28">
+  {
+    !connected && (
+      <div class="mb-5 flex gap-3 rounded-xl border border-gold-300 bg-gold-50 p-4">
+        <Icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-gold-600" />
+        <p class="text-sm leading-relaxed text-gold-700">
+          <span class="font-semibold">Setup step remaining.</span> Connect the enquiry Google Form
+          in <code class="rounded bg-gold-100 px-1 py-0.5 text-[0.8em]">src/config/google-forms.ts</code>.
+          Until then, messages cannot be sent from here — the telephone number and e-mail address
+          alongside still work.
+        </p>
+      </div>
+    )
+  }
+
+  <div data-panel="success" hidden class="card border-emerald-200 bg-emerald-50 p-7 text-center">
+    <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white">
+      <Icon name="check" class="h-7 w-7" />
+    </span>
+    <h3 tabindex="-1" class="mt-4 text-xl font-bold text-emerald-900 focus:outline-none">
+      Message sent
+    </h3>
+    <p class="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-emerald-800">
+      Thank you for writing to us. We read enquiries during library hours and will reply as soon as
+      we can. For anything urgent, please telephone
+      <a class="font-semibold underline underline-offset-2" href={site.phoneHref}>{site.phone}</a>.
+    </p>
+  </div>
+
+  <div data-panel="error" hidden class="mb-5 rounded-xl border border-rose-300 bg-rose-50 p-4">
+    <div class="flex gap-3">
+      <Icon name="alert" class="mt-0.5 h-5 w-5 shrink-0 text-rose-600" />
+      <div class="text-sm leading-relaxed text-rose-800">
+        <p tabindex="-1" class="font-semibold focus:outline-none">Your message was not sent</p>
+        <p data-message class="mt-1"></p>
+        <p class="mt-2">
+          Please telephone
+          <a class="font-semibold underline underline-offset-2" href={site.phoneHref}>{site.phone}</a>
+          {
+            directLink && (
+              <>
+                {' '}or
+                <a class="font-semibold underline underline-offset-2" href={directLink} target="_blank" rel="noopener">
+                  write to us on Google Forms
+                </a>
+              </>
+            )
+          }.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <form
+    data-google-form
+    data-endpoint={endpoint}
+    data-configured={String(connected)}
+    novalidate
+    class="card p-5 sm:p-7"
+  >
+    <div class="grid gap-5 sm:grid-cols-2">
+      <FormField fieldKey="enq-name" entry={entries.name} label="Your name" required autocomplete="name" />
+      <FormField
+        fieldKey="enq-mobile"
+        entry={entries.mobile}
+        label="Mobile number"
+        type="tel"
+        required
+        digits={10}
+        inputmode="numeric"
+        autocomplete="tel"
+        placeholder="10-digit number"
+      />
+      <FormField
+        fieldKey="enq-subject"
+        entry={entries.subject}
+        label="What is this about?"
+        type="select"
+        required
+        options={enquirySubjects}
+        class="sm:col-span-2"
+      />
+      <FormField
+        fieldKey="enq-message"
+        entry={entries.message}
+        label="Your message"
+        type="textarea"
+        required
+        rows={5}
+        placeholder="Tell us what you would like to know. You may write in Tamil or English."
+        class="sm:col-span-2"
+      />
+    </div>
+
+    <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
+      <label>
+        Website
+        <input type="text" name="website" tabindex="-1" autocomplete="off" />
+      </label>
+    </div>
+
+    <button type="submit" data-submit class="btn btn-primary mt-6 w-full disabled:opacity-60 sm:w-auto sm:!px-8">
+      <span data-submit-label>Send message</span>
+      <Icon name="arrow-right" class="h-[18px] w-[18px]" />
+    </button>
+  </form>
+</div>
+
+<script>
+  import { initGoogleForms } from '../scripts/google-form';
+  initGoogleForms();
+</script>

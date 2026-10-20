@@ -1,0 +1,167 @@
+---
+import { withBase } from '../lib/links';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import StatStrip from '../components/StatStrip.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import CourseCard from '../components/CourseCard.astro';
+import ScheduleStrip from '../components/ScheduleStrip.astro';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/icons';
+import { featuredCourses, courses } from '../data/courses';
+import { kurals, site } from '../data/site';
+
+const pillars: { icon: IconName; title: string; body: string }[] = [
+  {
+    icon: 'heart',
+    title: 'Purely non-profit',
+    body: 'Running costs come from the founder’s family pension. We neither solicit nor accept public donations.',
+  },
+  {
+    icon: 'rupee',
+    title: '₹500 a month, nothing more',
+    body: 'The fee covers utilities and study material. Full and partial waivers are arranged for those who need them.',
+  },
+  {
+    icon: 'users',
+    title: 'Built for rural students',
+    body: 'Classes start from the NCERT and Samacheer foundation, so you can begin without any earlier coaching.',
+  },
+  {
+    icon: 'clipboard',
+    title: 'Tested every fortnight',
+    body: 'A full mock test every two weeks, followed by a performance review that tells you exactly where to work.',
+  },
+];
+---
+
+<BaseLayout
+  title={`${site.name}, ${site.location}`}
+  bareTitle
+  description={site.description}
+>
+  <Hero />
+
+  <div class="relative z-10 -translate-y-8 sm:-translate-y-10">
+    <StatStrip />
+  </div>
+
+  <!-- Programmes -->
+  <section class="container-page pb-4">
+    <SectionHeading
+      title="Find the Right Coaching Programme"
+      subtitle="Ten examination pathways, each taught from the foundation upwards."
+    />
+
+    <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {featuredCourses.map((course) => <CourseCard course={course} />)}
+    </div>
+
+    <div class="mt-7 text-center">
+      <a href={withBase('/courses/')} class="btn btn-outline">
+        See all {courses.length} programmes
+        <Icon name="arrow-right" class="h-[18px] w-[18px]" />
+      </a>
+    </div>
+  </section>
+
+  <!-- Daily rhythm -->
+  <section class="container-page mt-16">
+    <SectionHeading
+      title="A Study Routine That Builds Consistency"
+      subtitle="Six days a week, the same shape every day — the habit that carries candidates through a long preparation."
+    />
+    <div class="mt-8">
+      <ScheduleStrip />
+    </div>
+    <p class="mt-5 text-center text-sm text-ink-soft">
+      <a class="font-semibold text-navy-700 underline underline-offset-4 hover:text-navy-500" href={withBase('/timetable/')}>
+        See the full weekly timetable
+      </a>
+    </p>
+  </section>
+
+  <!-- Why the Academy exists -->
+  <section class="mt-20 border-y border-cream-300 bg-cream-100 py-16">
+    <div class="container-page">
+      <SectionHeading
+        title="Why This Academy Exists"
+        subtitle="A service-driven initiative for the young people of Chitharal and the villages around it."
+      />
+
+      <div class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          pillars.map((pillar) => (
+            <div class="card h-full p-5">
+              <span class="flex h-11 w-11 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+                <Icon name={pillar.icon} class="h-[22px] w-[22px]" />
+              </span>
+              <h3 class="mt-4 text-[1.1rem] font-bold leading-snug">{pillar.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-ink-soft">{pillar.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-9 text-center">
+        <a href={withBase('/about/')} class="btn btn-outline">
+          Read our story
+          <Icon name="arrow-right" class="h-[18px] w-[18px]" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kural -->
+  <section class="container-page mt-16">
+    <div class="mx-auto max-w-3xl">
+      <figure class="rounded-2xl border border-gold-200 bg-gradient-to-b from-gold-50 to-cream-50 px-6 py-8 text-center sm:px-10">
+        <blockquote>
+          <p class="tamil text-lg font-medium text-navy-700" lang="ta">
+            {kurals[1].tamil.split('\n').map((line) => <span class="block">{line}</span>)}
+          </p>
+          <p class="mx-auto mt-4 max-w-xl font-display text-[1.0625rem] italic leading-relaxed text-ink-soft">
+            “{kurals[1].english}”
+          </p>
+        </blockquote>
+        <figcaption class="mt-4 text-sm font-semibold uppercase tracking-[0.14em] text-gold-600">
+          {kurals[1].number}
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Call to action -->
+  <section class="container-page mt-16">
+    <div class="relative overflow-hidden rounded-2xl bg-navy-700 px-6 py-12 text-center sm:px-12">
+      <svg
+        class="pointer-events-none absolute -left-20 -top-20 h-80 w-80 text-navy-500 opacity-40"
+        viewBox="0 0 100 100"
+        aria-hidden="true"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="0.7"
+      >
+        {
+          Array.from({ length: 12 }).map((_, i) => (
+            <ellipse cx="50" cy="50" rx="46" ry="13" transform={`rotate(${i * 15} 50 50)`} />
+          ))
+        }
+      </svg>
+
+      <div class="relative">
+        <h2 class="text-2xl font-bold text-white sm:text-[2rem]">Admissions are open</h2>
+        <p class="mx-auto mt-3 max-w-xl leading-relaxed text-navy-100">
+          Open to higher secondary (+2) and degree holders aspiring to public service. Fill the
+          application once and a coordinator will telephone you about your batch.
+        </p>
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
+          <a href={withBase('/apply/')} class="btn btn-gold !px-8">Apply for Admission</a>
+          <a href={withBase('/contact/')} class="btn !border !border-navy-400 !bg-transparent !text-white hover:!bg-navy-600">
+            Talk to us first
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,122 @@
+---
+import { withBase } from '../lib/links';
+import Icon from './Icon.astro';
+import { kurals, site } from '../data/site';
+import { firstPublicAsset } from '../lib/assets';
+
+// Drop a photograph of the Academy at public/images/hero.jpg (or .webp / .png)
+// and it takes over this panel automatically. Until then the designed fallback
+// below stands in, so the page never looks unfinished.
+const heroImage = firstPublicAsset([
+  'images/hero.jpg',
+  'images/hero.webp',
+  'images/hero.png',
+  'images/hero.jpeg',
+]);
+
+const kural = kurals[0];
+---
+
+<section class="relative overflow-hidden bg-gradient-to-b from-cream-200 via-cream-100 to-cream-50">
+  <!-- Kolam watermark behind the copy, echoing the Academy's printed notice. -->
+  <svg
+    class="pointer-events-none absolute -left-24 top-1/2 hidden h-[34rem] w-[34rem] -translate-y-1/2 text-gold-400 opacity-[0.17] lg:block"
+    viewBox="0 0 100 100"
+    aria-hidden="true"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="0.5"
+  >
+    {
+      Array.from({ length: 16 }).map((_, i) => (
+        <ellipse cx="50" cy="50" rx="46" ry="12" transform={`rotate(${i * 11.25} 50 50)`} />
+      ))
+    }
+    <circle cx="50" cy="50" r="30"></circle>
+    <circle cx="50" cy="50" r="18"></circle>
+    <circle cx="50" cy="50" r="6"></circle>
+  </svg>
+
+  <div class="relative lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.02fr)] lg:items-stretch">
+    <!-- Copy -->
+    <div class="flex items-center">
+      <div class="w-full px-5 py-12 sm:px-8 lg:py-16 lg:pl-[max(1.25rem,calc((100vw-76rem)/2+1.25rem))] lg:pr-12">
+        <h1 class="max-w-xl text-[2.1rem] font-bold leading-[1.12] text-navy-700 sm:text-[2.6rem] lg:text-[3rem]">
+          Your Journey to<br />Public Service Starts Here
+        </h1>
+
+        <p class="mt-5 max-w-lg text-[1.0625rem] leading-relaxed text-ink-soft">
+          {site.tagline}
+        </p>
+
+        <div class="mt-6 max-w-lg border-l-[3px] border-gold-400 pl-4">
+          <p class="tamil text-[0.95rem] font-medium text-navy-700" lang="ta">
+            {kural.tamil.replace('\n', ' ')}
+            <span class="font-sans text-sm text-gold-600">({kural.number})</span>
+          </p>
+          <p class="mt-1.5 font-display text-[0.95rem] italic leading-relaxed text-ink-soft">
+            “{kural.english}”
+          </p>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={withBase('/courses/')} class="btn btn-primary">
+            Explore Courses
+            <Icon name="arrow-right" class="h-[18px] w-[18px]" />
+          </a>
+          <a href={withBase('/apply/')} class="btn btn-outline">Apply Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photograph, or the designed stand-in -->
+    <div class="relative min-h-[18rem] sm:min-h-[22rem] lg:min-h-[30rem]">
+      {
+        heroImage ? (
+          <img
+            src={withBase(heroImage)}
+            alt="Students preparing for competitive examinations at the Academy in Chitharal"
+            class="h-full w-full object-cover"
+            width="1200"
+            height="800"
+            fetchpriority="high"
+          />
+        ) : (
+          <div class="relative h-full w-full overflow-hidden bg-navy-700">
+            <svg
+              class="absolute inset-0 h-full w-full text-navy-500 opacity-50"
+              viewBox="0 0 400 300"
+              preserveAspectRatio="xMidYMid slice"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="0.8"
+            >
+              {Array.from({ length: 18 }).map((_, i) => (
+                <ellipse cx="300" cy="150" rx="150" ry="42" transform={`rotate(${i * 10} 300 150)`} />
+              ))}
+              <circle cx="300" cy="150" r="96" />
+              <circle cx="300" cy="150" r="60" />
+            </svg>
+
+            <div class="relative flex h-full flex-col items-center justify-center gap-6 px-8 py-14 text-center">
+              <div class="flex items-center gap-5 text-gold-300">
+                <Icon name="book" class="h-9 w-9" />
+                <Icon name="graduation" class="h-10 w-10" />
+                <Icon name="clipboard" class="h-9 w-9" />
+              </div>
+              <p class="font-display text-[1.75rem] font-bold leading-tight text-white sm:text-[2rem]">
+                Dream · Prepare · Achieve
+              </p>
+              <p class="max-w-sm text-sm leading-relaxed text-navy-200">
+                A quiet library every morning, classes every afternoon, and a test every
+                fortnight — in your own town.
+              </p>
+              <span class="h-1 w-20 rounded-full bg-gold-400" />
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

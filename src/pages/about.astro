@@ -1,0 +1,159 @@
+---
+import { withBase } from '../lib/links';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import KuralQuote from '../components/KuralQuote.astro';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/icons';
+import { kurals, site } from '../data/site';
+
+const principles: { icon: IconName; title: string; body: string }[] = [
+  {
+    icon: 'heart',
+    title: 'We are not a business',
+    body: 'The Academy operates solely for the welfare of the rural community. No profit is taken, and no trustee draws a salary from the fees collected.',
+  },
+  {
+    icon: 'shield',
+    title: 'We do not accept donations',
+    body: 'Primary operating costs and infrastructure are funded directly from the founder’s and family’s personal retirement pension funds. We neither solicit nor accept public donations.',
+  },
+  {
+    icon: 'rupee',
+    title: 'The fee is a contribution, not a price',
+    body: 'A nominal ₹500 per month covers basic operating utilities and continuous study materials — nothing more. It exists so the Academy can keep its doors open, not to make guidance conditional on means.',
+  },
+  {
+    icon: 'book',
+    title: 'Rooted in the Thirukkural',
+    body: 'The Academy takes its name and its working principles from Thiruvalluvar: deliberate before you begin, then persevere. Those two couplets head every notice we publish.',
+  },
+];
+---
+
+<BaseLayout
+  title="About Us"
+  description="Thiruvalluvar Academy for Civil Service Exam is a non-profit, service-driven initiative in Chitharal, funded by its founder's family and dedicated to rural students preparing for public service."
+>
+  <PageHeader
+    eyebrow="About Us"
+    title="An academy built to close the distance between a village and a government post"
+    description="Our mission, how we are funded, and the principles we will not trade away."
+  />
+
+  <!-- Mission -->
+  <section class="container-page py-14">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-14">
+      <div>
+        <h2 class="text-2xl font-bold sm:text-[1.75rem]">Our mission and origin</h2>
+        <div class="prose-page mt-5">
+          <p>
+            <strong>{site.name}</strong> is a purely non-profit, service-driven initiative
+            established in {site.location} to empower rural youth, students and job seekers.
+          </p>
+          <p>
+            Rooted in the timeless wisdom of the <strong>Thirukkural</strong>, the Academy is
+            dedicated to bridging the educational gap for candidates from rural backgrounds who
+            aspire to clear state, national and defence competitive examinations.
+          </p>
+          <p>
+            That gap is rarely about ability. A student in a village has the same capacity as one
+            in Chennai, but not the same library, not the same teachers who have seen the question
+            paper before, and not the family savings that a year in a city coaching centre
+            demands. This Academy exists to supply the three things that are missing — a quiet place
+            to read, guidance from people who know the syllabus, and the discipline of a test every
+            fortnight — close enough to home that nobody has to leave to get them.
+          </p>
+          <p>
+            We are open to anyone who has completed higher secondary (+2) or holds a degree and
+            intends to sit a public service examination. No entrance test, no interview, no
+            selection by marks.
+          </p>
+        </div>
+      </div>
+
+      <aside class="lg:pt-2">
+        <div class="card overflow-hidden">
+          <div class="bg-navy-700 px-5 py-4">
+            <h3 class="text-base font-bold text-white">The Academy at a glance</h3>
+          </div>
+          <dl class="divide-y divide-cream-200 px-5 py-1 text-sm">
+            {
+              [
+                ['Established in', site.location],
+                ['Status', 'Non-profit, self-funded'],
+                ['Programmes', '10 examination pathways'],
+                ['Open', '6 days a week'],
+                ['Library', '10:00 AM – 1:00 PM'],
+                ['Classes', '2:00 PM – 5:00 PM'],
+                ['Assessment', 'Fortnightly mock tests'],
+                ['Fee', '₹500 per month'],
+                ['Eligibility', '+2 or degree holders'],
+              ].map(([label, value]) => (
+                <div class="flex items-baseline justify-between gap-4 py-3">
+                  <dt class="text-ink-soft">{label}</dt>
+                  <dd class="text-right font-semibold text-navy-700">{value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section class="border-y border-cream-300 bg-cream-100 py-16">
+    <div class="container-page">
+      <SectionHeading
+        title="Self-Sustaining & Non-Commercial"
+        subtitle="How the Academy is funded, stated plainly, because families deserve to know before they enrol."
+      />
+
+      <div class="mt-9 grid gap-5 sm:grid-cols-2">
+        {
+          principles.map((principle) => (
+            <div class="card flex h-full gap-4 p-5">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-700 text-gold-300">
+                <Icon name={principle.icon} class="h-[22px] w-[22px]" />
+              </span>
+              <div>
+                <h3 class="text-[1.1rem] font-bold leading-snug">{principle.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft">{principle.body}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Kurals -->
+  <section class="container-page py-16">
+    <SectionHeading
+      title="The Two Couplets We Work By"
+      subtitle="They head our notice board, our application form, and this website."
+    />
+    <div class="mt-8 grid gap-5 lg:grid-cols-2">
+      {kurals.map((kural) => <KuralQuote {...kural} />)}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="container-page pb-16">
+    <div class="card flex flex-col items-center gap-5 p-8 text-center sm:flex-row sm:text-left">
+      <div class="flex-1">
+        <h2 class="text-xl font-bold">Ready to begin?</h2>
+        <p class="mt-2 leading-relaxed text-ink-soft">
+          Admissions are open for all ten programmes. If you would like to see the Academy first,
+          visit during library hours — no appointment needed.
+        </p>
+      </div>
+      <div class="flex shrink-0 flex-wrap justify-center gap-3">
+        <a href={withBase('/apply/')} class="btn btn-primary">Apply for Admission</a>
+        <a href={withBase('/contact/')} class="btn btn-outline">Contact us</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
