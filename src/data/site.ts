@@ -40,7 +40,7 @@ export const schedule = {
   library: { label: 'Library & Self-Study', time: '10:00 AM – 1:00 PM' },
   classes: { label: 'Coaching Classes', time: '2:00 PM – 5:00 PM' },
   tests: { label: 'Fortnightly Mock Tests', time: 'Performance review after every test' },
-  fee: '₹500',
+  fee: '₹1500',
   feePeriod: '/ month',
 } as const;
 
