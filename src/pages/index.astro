@@ -2,6 +2,7 @@
 import { withBase } from '../lib/links';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import NewsTicker from '../components/NewsTicker.astro';
 import StatStrip from '../components/StatStrip.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import CourseCard from '../components/CourseCard.astro';
@@ -9,7 +10,8 @@ import ScheduleStrip from '../components/ScheduleStrip.astro';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/icons';
 import { featuredCourses, courses } from '../data/courses';
-import { kurals, site } from '../data/site';
+import { kurals, schedule, site } from '../data/site';
+import { capitalise, numberWord } from '../lib/format';
 
 const pillars: { icon: IconName; title: string; body: string }[] = [
   {
@@ -19,7 +21,7 @@ const pillars: { icon: IconName; title: string; body: string }[] = [
   },
   {
     icon: 'rupee',
-    title: 'Just ₹1500 per month',
+    title: `Just ${schedule.fee} per month`,
     body: 'The fee covers utilities and study material. Full and partial waivers are arranged for those who need them.',
   },
   {
@@ -40,6 +42,7 @@ const pillars: { icon: IconName; title: string; body: string }[] = [
   bareTitle
   description={site.description}
 >
+  <NewsTicker />
   <Hero />
 
   <div class="relative z-10 -translate-y-8 sm:-translate-y-10">
@@ -50,7 +53,7 @@ const pillars: { icon: IconName; title: string; body: string }[] = [
   <section class="container-page pb-4">
     <SectionHeading
       title="Find the Right Coaching Programme"
-      subtitle="Ten examination pathways, each taught from the foundation upwards."
+      subtitle={`${capitalise(numberWord(courses.length))} examination pathways, each taught from the foundation upwards.`}
     />
 
     <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -69,7 +72,7 @@ const pillars: { icon: IconName; title: string; body: string }[] = [
   <section class="container-page mt-16">
     <SectionHeading
       title="A Study Routine That Builds Consistency"
-      subtitle="Six days a week, the same shape every day — the habit that carries candidates through a long preparation."
+      subtitle={`${schedule.daysHeading}, the same shape every day — the habit that carries candidates through a long preparation.`}
     />
     <div class="mt-8">
       <ScheduleStrip />

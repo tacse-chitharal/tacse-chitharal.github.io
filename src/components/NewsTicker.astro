@@ -1,0 +1,150 @@
+---
+/**
+ * The scrolling news strip on the home page.
+ *
+ * Messages come from the admin dashboard (src/content/news.json). The strip
+ * scrolls right-to-left like a TV news ticker, pauses while the mouse is over
+ * it or a link in it has keyboard focus, and stands still for anyone whose
+ * device asks for reduced motion. With no current messages it is not shown.
+ */
+import { news } from '../data/news';
+import { withBase } from '../lib/links';
+---
+
+{
+  news.length > 0 && (
+    <section class="news-strip border-b border-gold-200 bg-gold-50" aria-label="Latest news" data-news-strip>
+      <div class="flex items-stretch">
+        <p class="relative z-10 flex shrink-0 items-center gap-2 bg-navy-700 px-3.5 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-gold-300 sm:px-5 sm:text-xs">
+          <span class="news-dot h-1.5 w-1.5 rounded-full bg-gold-300" aria-hidden="true" />
+          Latest
+        </p>
+
+        <div class="news-viewport relative min-w-0 flex-1 overflow-hidden" data-news-viewport>
+          <div class="news-track flex w-max" data-news-track>
+            {[0, 1].map((copy) => (
+              <ul class="news-list flex shrink-0 items-center" aria-hidden={copy === 1 ? 'true' : undefined} data-news-list>
+                {news.map((item) => (
+                  <li class="flex items-center" data-until={item.showUntil}>
+                    {item.href ? (
+                      <a
+                        href={withBase(item.href)}
+                        tabindex={copy === 1 ? -1 : undefined}
+                        class="news-item group flex items-center gap-2.5 whitespace-nowrap px-5 py-2.5 text-sm font-medium text-navy-700"
+                      >
+                        <span class="underline-offset-4 group-hover:underline">{item.message}</span>
+                        {item.starts && <span class="news-chip">{item.starts}</span>}
+                        {item.fee && <span class="news-chip">{item.fee}</span>}
+                      </a>
+                    ) : (
+                      <span class="news-item flex items-center gap-2.5 whitespace-nowrap px-5 py-2.5 text-sm font-medium text-navy-700">
+                        <span>{item.message}</span>
+                        {item.starts && <span class="news-chip">{item.starts}</span>}
+                        {item.fee && <span class="news-chip">{item.fee}</span>}
+                      </span>
+                    )}
+                    <span class="text-[0.6rem] text-gold-500" aria-hidden="true">◆</span>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .news-chip {
+    border: 1px solid var(--color-gold-300);
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-gold-700);
+  }
+
+  /* Soft fade at both edges so messages slide in and out rather than being cut. */
+  .news-viewport {
+    mask-image: linear-gradient(to right, transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
+  }
+
+  .news-track {
+    animation: news-scroll var(--news-duration, 40s) linear infinite;
+  }
+
+  .news-strip:hover .news-track,
+  .news-strip:focus-within .news-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes news-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* Two identical copies side by side: moving by one copy's width loops seamlessly. */
+      transform: translateX(-50%);
+    }
+  }
+
+  .news-dot {
+    animation: news-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes news-pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .news-track,
+    .news-dot {
+      animation: none;
+    }
+    .news-viewport {
+      overflow-x: auto;
+      mask-image: none;
+    }
+    .news-list[aria-hidden='true'] {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const strip = document.querySelector<HTMLElement>('[data-news-strip]');
+
+  if (strip) {
+    // Hide messages whose "show until" date has passed since the site was
+    // last built. Dates are compared in the visitor's own calendar.
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    strip.querySelectorAll<HTMLElement>('[data-until]').forEach((item) => {
+      if ((item.dataset.until ?? '') < today) item.remove();
+    });
+
+    const lists = [...strip.querySelectorAll<HTMLElement>('[data-news-list]')];
+    if (!lists[0]?.children.length) {
+      strip.remove();
+    } else {
+      const viewport = strip.querySelector<HTMLElement>('[data-news-viewport]')!;
+      const track = strip.querySelector<HTMLElement>('[data-news-track]')!;
+
+      // Constant reading speed whatever the number of messages: about 60
+      // pixels a second. Each copy is at least as wide as the strip, so the
+      // loop never shows an empty gap on a wide screen.
+      const fit = () => {
+        lists.forEach((list) => (list.style.minWidth = `${viewport.clientWidth}px`));
+        const seconds = Math.max(12, lists[0].scrollWidth / 60);
+        track.style.setProperty('--news-duration', `${seconds}s`);
+      };
+
+      fit();
+      window.addEventListener('resize', fit, { passive: true });
+    }
+  }
+</script>

@@ -1,0 +1,13 @@
+{
+  "feePerMonth": 1500,
+  "openDays": [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ],
+  "libraryHours": "10:00 AM – 1:00 PM",
+  "classHours": "2:00 PM – 5:00 PM"
+}

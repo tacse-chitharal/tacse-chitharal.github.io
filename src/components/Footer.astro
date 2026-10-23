@@ -2,7 +2,7 @@
 import { withBase } from '../lib/links';
 import Icon from './Icon.astro';
 import Logo from './Logo.astro';
-import { nav, site } from '../data/site';
+import { nav, schedule, site } from '../data/site';
 import { courses } from '../data/courses';
 
 const year = new Date().getFullYear();
@@ -104,7 +104,7 @@ const footerCourses = courses.slice(0, 6);
           }
           <li>
             <a class="font-medium text-gold-200 transition-colors hover:text-white" href={withBase('/courses/')}>
-              All 10 programmes →
+              All {courses.length} programmes →
             </a>
           </li>
         </ul>
@@ -134,7 +134,9 @@ const footerCourses = courses.slice(0, 6);
           </li>
           <li class="flex gap-3">
             <Icon name="clock" class="mt-0.5 h-4 w-4 shrink-0 text-gold-300" />
-            <span class="text-navy-200">Library 10 AM – 1 PM<br />Classes 2 PM – 5 PM</span>
+            <span class="text-navy-200">
+              Library {schedule.library.time}<br />Classes {schedule.classes.time}
+            </span>
           </li>
         </ul>
       </div>

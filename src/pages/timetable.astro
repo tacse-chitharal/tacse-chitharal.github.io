@@ -6,20 +6,34 @@ import SectionHeading from '../components/SectionHeading.astro';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/icons';
 import { schedule } from '../data/site';
+import { capitalise } from '../lib/format';
 
-const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+const isOpen = (day: (typeof week)[number]) => (schedule.openDays as string[]).includes(day);
+
+/** ["Sunday"] -> "Sundays"; ["Saturday", "Sunday"] -> "Saturdays and Sundays". */
+const closedText = (() => {
+  const plural = schedule.closedDays.map((day) => `${day}s`);
+  if (plural.length === 0) return '';
+  if (plural.length === 1) return plural[0];
+  return `${plural.slice(0, -1).join(', ')} and ${plural.at(-1)}`;
+})();
+
+const openSubtitle = closedText
+  ? `${capitalise(schedule.dayRange)}. The Academy is closed on ${closedText} and on public holidays declared by the Government of Tamil Nadu.`
+  : `${capitalise(schedule.dayRange)}. The Academy closes only on public holidays declared by the Government of Tamil Nadu.`;
 
 const blocks: { icon: IconName; time: string; title: string; body: string; tone: 'gold' | 'navy' | 'green' }[] = [
   {
     icon: 'book',
-    time: '10:00 AM – 1:00 PM',
+    time: schedule.library.time,
     title: 'Library & self-study',
     body: 'The reading room is open and quiet. Standard textbooks, previous-year question papers and the day’s newspapers are on the shelves. Staff are present for questions, and career counselling appointments are held in this window.',
     tone: 'gold',
   },
   {
     icon: 'board',
-    time: '2:00 PM – 5:00 PM',
+    time: schedule.classes.time,
     title: 'Coaching & interactive classes',
     body: 'Taught sessions for the day’s subject, followed by problem-solving aloud and a current-affairs discussion drawn from that morning’s newspaper. Questions are expected, not merely allowed.',
     tone: 'navy',
@@ -39,19 +53,36 @@ const toneClasses = {
   green: 'bg-emerald-100 text-emerald-700',
 };
 
+// The last open day of each week carries revision or the mock test; the days
+// before it are teaching days. Follows the open days set in the dashboard.
+const short = (day: string) => day.slice(0, 3);
+const lastDay = schedule.openDays.at(-1) ?? 'Saturday';
+const teachingDays = schedule.openDays.slice(0, -1);
+const teachingLabel =
+  teachingDays.length === 0
+    ? ''
+    : teachingDays.length === 1
+      ? short(teachingDays[0])
+      : `${short(teachingDays[0])} – ${short(teachingDays.at(-1) ?? '')}`;
 const fortnight = [
-  { week: 'Week 1', items: ['Mon – Fri: teaching blocks', 'Sat: revision & doubt clearing'] },
-  { week: 'Week 2', items: ['Mon – Fri: teaching blocks', 'Sat: full-length mock test'] },
+  {
+    week: 'Week 1',
+    items: [teachingLabel && `${teachingLabel}: teaching blocks`, `${short(lastDay)}: revision & doubt clearing`].filter(Boolean),
+  },
+  {
+    week: 'Week 2',
+    items: [teachingLabel && `${teachingLabel}: teaching blocks`, `${short(lastDay)}: full-length mock test`].filter(Boolean),
+  },
 ];
 ---
 
 <BaseLayout
   title="Timetable"
-  description="Library 10 AM to 1 PM, coaching classes 2 PM to 5 PM, six days a week, with a full-length mock test every fortnight. Fee ₹1500 per month."
+  description={`Library ${schedule.library.time}, coaching classes ${schedule.classes.time}, ${schedule.days.toLowerCase()}, with a full-length mock test every fortnight. Fee ${schedule.fee} per month.`}
 >
   <PageHeader
     eyebrow="Daily Schedule & Structure"
-    title="The same shape every day, six days a week"
+    title={`The same shape every day, ${schedule.days.toLowerCase()}`}
     description="Consistency is what carries a candidate through a long preparation. The Academy keeps one simple rhythm so that studying becomes a habit rather than a decision you have to make each morning."
   />
 
@@ -92,28 +123,36 @@ const fortnight = [
   <section class="border-y border-cream-300 bg-cream-100 py-16">
     <div class="container-page">
       <SectionHeading
-        title="Open Six Days a Week"
-        subtitle="Monday to Saturday. The Academy is closed on Sundays and on public holidays declared by the Government of Tamil Nadu."
+        title={`Open ${schedule.daysTitle}`}
+        subtitle={openSubtitle}
       />
 
       <div class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
         {
-          days.map((day) => (
-            <div class="card p-4 text-center">
-              <p class="text-sm font-bold text-navy-700">{day}</p>
-              <p class="mt-2 text-xs leading-relaxed text-ink-soft">
-                Library 10–1
-                <br />
-                Classes 2–5
-              </p>
-              <span class="mt-3 inline-block h-1 w-8 rounded-full bg-gold-400" />
-            </div>
-          ))
+          week.map((day) =>
+            isOpen(day) ? (
+              <div class="card p-4 text-center">
+                <p class="text-sm font-bold text-navy-700">{day}</p>
+                <p class="mt-2 text-xs leading-relaxed text-ink-soft">
+                  Library
+                  <br />
+                  {schedule.library.time}
+                </p>
+                <p class="mt-1.5 text-xs leading-relaxed text-ink-soft">
+                  Classes
+                  <br />
+                  {schedule.classes.time}
+                </p>
+                <span class="mt-3 inline-block h-1 w-8 rounded-full bg-gold-400" />
+              </div>
+            ) : (
+              <div class="card border-dashed bg-cream-50 p-4 text-center">
+                <p class="text-sm font-bold text-ink-soft">{day}</p>
+                <p class="mt-2 text-xs leading-relaxed text-ink-soft">Closed</p>
+              </div>
+            ),
+          )
         }
-        <div class="card border-dashed bg-cream-50 p-4 text-center">
-          <p class="text-sm font-bold text-ink-soft">Sunday</p>
-          <p class="mt-2 text-xs leading-relaxed text-ink-soft">Closed</p>
-        </div>
       </div>
     </div>
   </section>
@@ -124,8 +163,8 @@ const fortnight = [
       <div>
         <h2 class="text-2xl font-bold sm:text-[1.75rem]">How a fortnight is built</h2>
         <p class="prose-page mt-4">
-          Teaching runs in a two-week cycle. The first Saturday is kept for revision and clearing
-          doubts from the fortnight's lessons; the second Saturday is a full-length mock test,
+          Teaching runs in a two-week cycle. The first {lastDay} is kept for revision and clearing
+          doubts from the fortnight's lessons; the second {lastDay} is a full-length mock test,
           marked and returned with a written performance review.
         </p>
 

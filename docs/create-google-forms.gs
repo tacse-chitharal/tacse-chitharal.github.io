@@ -28,22 +28,14 @@
  *  Run it only once. Running it again makes a second, separate set of forms.
  *
  *  The answer options below MUST match the website exactly — they are copied
- *  from src/data/courses.ts (formValue) and src/config/google-forms.ts. If you
- *  change an option on the website, change it in the Google Form too.
+ *  from src/config/google-forms.ts. If you change an option on the website,
+ *  change it in the Google Form too.
+ *
+ *  "Coaching Required For" is deliberately a Paragraph question, not
+ *  checkboxes: the website sends the chosen courses as one line of text
+ *  ("UPSC Civil Services, TNPSC Group 4"), so courses added or renamed in the
+ *  admin dashboard never need a change to the form.
  */
-
-var COURSE_OPTIONS = [
-  'UPSC (Civil Services)',
-  'SSC (Staff Selection Central Services)',
-  'Banking Services',
-  'TNPSC Group 1',
-  'TNPSC Group 2',
-  'TNPSC Group 4',
-  'TNPSC Group VAO',
-  'TNUSRB Sub-Inspector of Police',
-  'Police Constable',
-  'NDA (Army / Navy / Airforce)',
-];
 
 var QUALIFICATION_OPTIONS = [
   'Higher Secondary (+2)',
@@ -113,10 +105,7 @@ function buildAdmissionForm_() {
     guardianName: form.addTextItem().setTitle('Father / Mother / Guardian Name'),
     guardianMobile: form.addTextItem().setTitle('Parent / Guardian Mobile Number'),
     guardianEmployment: form.addTextItem().setTitle('Employment Status of Parent / Guardian'),
-    coachingFor: form
-      .addCheckboxItem()
-      .setTitle('Coaching Required For')
-      .setChoiceValues(COURSE_OPTIONS),
+    coachingFor: form.addParagraphTextItem().setTitle('Coaching Required For'),
     financialAid: form
       .addMultipleChoiceItem()
       .setTitle('Fee Concession Requested?')

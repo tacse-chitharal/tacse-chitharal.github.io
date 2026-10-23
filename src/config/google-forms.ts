@@ -16,8 +16,10 @@
  *  ---------------------------------------------------------------------
  *
  *  1. Build the Google Form first, with the questions listed in
- *     `docs/GOOGLE-FORMS-SETUP.md`. Question order does not matter, but the
- *     checkbox option text must match `formValue` in src/data/courses.ts.
+ *     `docs/GOOGLE-FORMS-SETUP.md`. Question order does not matter.
+ *     "Coaching Required For" must be a Paragraph (text) question: the
+ *     website sends the chosen courses as one line of text, so courses can be
+ *     added or renamed in the admin dashboard without touching the form.
  *
  *  2. Open the form, click "Send", choose the link icon, and copy the link.
  *     It looks like:

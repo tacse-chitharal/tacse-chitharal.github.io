@@ -3,7 +3,7 @@ import { withBase } from '../lib/links';
 import Icon from './Icon.astro';
 import FormField from './FormField.astro';
 import { courses } from '../data/courses';
-import { site } from '../data/site';
+import { schedule, site } from '../data/site';
 import {
   admissionForm,
   financialAidOptions,
@@ -58,7 +58,7 @@ const directLink = connected ? formViewUrl(admissionForm) : '';
       <p class="mt-1">
         Telephone the Academy on
         <a class="font-semibold underline underline-offset-2" href={site.phoneHref}>{site.phone}</a>
-        between 10 AM and 5 PM, or write to
+        during Academy hours ({schedule.dayRange}), or write to
         <a class="font-semibold underline underline-offset-2" href={`mailto:${site.email}`}>
           {site.email}
         </a>.
@@ -230,6 +230,7 @@ const directLink = connected ? formViewUrl(admissionForm) : '';
       <div data-field>
         <div
           data-required-group
+          data-join-entry={entries.coachingFor.trim() || undefined}
           role="group"
           aria-label="Coaching required for"
           class="grid gap-2.5 sm:grid-cols-2"
@@ -241,8 +242,7 @@ const directLink = connected ? formViewUrl(admissionForm) : '';
               >
                 <input
                   type="checkbox"
-                  name={entries.coachingFor.trim() || undefined}
-                  value={course.formValue}
+                  value={course.name}
                   data-course-id={course.id}
                   class="mt-0.5 h-[18px] w-[18px] shrink-0 accent-navy-700"
                 />
@@ -273,7 +273,7 @@ const directLink = connected ? formViewUrl(admissionForm) : '';
       </legend>
 
       <p class="mb-4 text-sm leading-relaxed text-ink-soft">
-        The fee is ₹1500 a month. Full or partial waivers are arranged for economically
+        The fee is {schedule.fee} a month. Full or partial waivers are arranged for economically
         disadvantaged rural students, orphans, and single-parent households. Asking will never
         affect your admission.
       </p>
@@ -338,7 +338,7 @@ const directLink = connected ? formViewUrl(admissionForm) : '';
   initGoogleForms();
 
   // Arriving from a course page via "Apply for this course" pre-ticks that
-  // programme, so the student does not have to find it in a list of ten.
+  // programme, so the student does not have to find it in the list.
   const requested = new URLSearchParams(window.location.search).get('course');
   if (requested) {
     const box = document.querySelector<HTMLInputElement>(

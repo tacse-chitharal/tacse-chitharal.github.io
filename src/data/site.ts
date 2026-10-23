@@ -1,7 +1,12 @@
 /**
  * Academy details used across every page.
- * Edit this file to change the address, phone number or timings site-wide.
+ *
+ * Name, contact details and the Thirukkural couplets are edited here, in code.
+ * The fee, opening days and hours come from src/content/settings.json, which
+ * the admin dashboard (Pages CMS) edits; this file only reads and checks them.
  */
+import settings from '../content/settings.json';
+import { capitalise, formatRupees, numberWord } from '../lib/format';
 
 export const site = {
   shortName: 'TACSE',
@@ -10,7 +15,7 @@ export const site = {
   district: 'Kanniyakumari District, Tamil Nadu',
   tagline: 'Affordable, community-driven coaching for rural youth and aspiring civil servants in Chitharal.',
   description:
-    'A non-profit academy in Chitharal preparing rural students for UPSC, TNPSC, SSC, Banking, Police and NDA examinations. Library, classes and fortnightly mock tests for ₹1500 a month.',
+    `A non-profit academy in Chitharal preparing rural students for UPSC, TNPSC, SSC, Banking, Police and NDA examinations. Library, classes and fortnightly mock tests for ${formatRupees(Number(settings.feePerMonth))} a month.`,
 
   // ---------------------------------------------------------------------
   // CONTACT DETAILS
@@ -35,14 +40,71 @@ export const site = {
   mapEmbedUrl: '',
 } as const;
 
-export const schedule = {
-  days: '6 days a week',
-  library: { label: 'Library & Self-Study', time: '10:00 AM – 1:00 PM' },
-  classes: { label: 'Coaching Classes', time: '2:00 PM – 5:00 PM' },
-  tests: { label: 'Fortnightly Mock Tests', time: 'Performance review after every test' },
-  fee: '₹1500',
-  feePeriod: '/ month',
-} as const;
+const WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+type Weekday = (typeof WEEK)[number];
+
+/**
+ * Reads the dashboard's settings and refuses obviously broken values, so a
+ * slip in the dashboard stops the deploy instead of publishing nonsense.
+ */
+function loadSchedule() {
+  const problems: string[] = [];
+
+  const fee = Number(settings.feePerMonth);
+  if (!Number.isFinite(fee) || fee < 0) problems.push('The monthly fee must be a number, 0 or more.');
+
+  // Keep the days in week order whatever order they were ticked in.
+  const ticked = Array.isArray(settings.openDays) ? settings.openDays : [];
+  const openDays = WEEK.filter((day) => ticked.includes(day));
+  if (openDays.length === 0) problems.push('Tick at least one day the Academy is open.');
+
+  const libraryHours = String(settings.libraryHours ?? '').trim();
+  const classHours = String(settings.classHours ?? '').trim();
+  if (!libraryHours) problems.push('Library hours are empty.');
+  if (!classHours) problems.push('Class hours are empty.');
+
+  if (problems.length) {
+    throw new Error(
+      `The fees and timetable in the admin dashboard need fixing before the website can update:\n  - ${problems.join('\n  - ')}`,
+    );
+  }
+
+  const closedDays = WEEK.filter((day) => !openDays.includes(day));
+  const count = openDays.length;
+
+  return {
+    openDays: openDays as Weekday[],
+    closedDays: closedDays as Weekday[],
+    /** "six" — for running text. */
+    daysWord: numberWord(count),
+    /** "6 days a week" */
+    days: count === 7 ? 'Every day of the week' : `${count} day${count === 1 ? '' : 's'} a week`,
+    /** "Six days a week" — to start a sentence. */
+    daysHeading: count === 7 ? 'Every day of the week' : `${capitalise(numberWord(count))} days a week`,
+    /** "Six Days a Week" — for title-case headings. */
+    daysTitle: count === 7 ? 'Every Day of the Week' : `${capitalise(numberWord(count))} Day${count === 1 ? '' : 's'} a Week`,
+    /** "Monday to Saturday", or a list when the days are not in one run. */
+    dayRange: describeDays(openDays as Weekday[]),
+    library: { label: 'Library & Self-Study', time: libraryHours },
+    classes: { label: 'Coaching Classes', time: classHours },
+    tests: { label: 'Fortnightly Mock Tests', time: 'Performance review after every test' },
+    feeAmount: fee,
+    fee: formatRupees(fee),
+    feePeriod: '/ month',
+  };
+}
+
+/** ["Monday" … "Saturday"] -> "Monday to Saturday"; gaps -> "Monday, Wednesday and Friday". */
+function describeDays(days: Weekday[]): string {
+  if (days.length === 7) return 'every day';
+  if (days.length === 1) return days[0];
+  const positions = days.map((day) => WEEK.indexOf(day));
+  const consecutive = positions.every((p, i) => i === 0 || p === positions[i - 1] + 1);
+  if (consecutive && days.length > 2) return `${days[0]} to ${days.at(-1)}`;
+  return `${days.slice(0, -1).join(', ')} and ${days.at(-1)}`;
+}
+
+export const schedule = loadSchedule();
 
 export const kurals = [
   {

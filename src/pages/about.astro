@@ -6,7 +6,8 @@ import SectionHeading from '../components/SectionHeading.astro';
 import KuralQuote from '../components/KuralQuote.astro';
 import Icon from '../components/Icon.astro';
 import type { IconName } from '../components/icons';
-import { kurals, site } from '../data/site';
+import { kurals, schedule, site } from '../data/site';
+import { courses } from '../data/courses';
 
 const principles: { icon: IconName; title: string; body: string }[] = [
   {
@@ -22,7 +23,7 @@ const principles: { icon: IconName; title: string; body: string }[] = [
   {
     icon: 'rupee',
     title: 'The fee is a contribution, not a price',
-    body: 'A nominal ₹1500 per month covers basic operating utilities and continuous study materials — nothing more. It exists so the Academy can keep its doors open, not to make guidance conditional on means.',
+    body: `A nominal ${schedule.fee} per month covers basic operating utilities and continuous study materials — nothing more. It exists so the Academy can keep its doors open, not to make guidance conditional on means.`,
   },
   {
     icon: 'book',
@@ -83,12 +84,12 @@ const principles: { icon: IconName; title: string; body: string }[] = [
               [
                 ['Established in', site.location],
                 ['Status', 'Non-profit, self-funded'],
-                ['Programmes', '10 examination pathways'],
-                ['Open', '6 days a week'],
-                ['Library', '10:00 AM – 1:00 PM'],
-                ['Classes', '2:00 PM – 5:00 PM'],
+                ['Programmes', `${courses.length} examination pathways`],
+                ['Open', schedule.days],
+                ['Library', schedule.library.time],
+                ['Classes', schedule.classes.time],
                 ['Assessment', 'Fortnightly mock tests'],
-                ['Fee', '₹1500 per month'],
+                ['Fee', `${schedule.fee} per month`],
                 ['Eligibility', '+2 or degree holders'],
               ].map(([label, value]) => (
                 <div class="flex items-baseline justify-between gap-4 py-3">
@@ -146,7 +147,7 @@ const principles: { icon: IconName; title: string; body: string }[] = [
       <div class="flex-1">
         <h2 class="text-xl font-bold">Ready to begin?</h2>
         <p class="mt-2 leading-relaxed text-ink-soft">
-          Admissions are open for all ten programmes. If you would like to see the Academy first,
+          Admissions are open for all {courses.length} programmes. If you would like to see the Academy first,
           visit during library hours — no appointment needed.
         </p>
       </div>

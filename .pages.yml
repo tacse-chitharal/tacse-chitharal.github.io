@@ -1,0 +1,227 @@
+# Admin dashboard for the TACSE website, run by Pages CMS (https://app.pagescms.org).
+#
+# Sign in there with the TACSE GitHub account (tacse-chitharal). Every Save
+# writes to the files below and republishes the website in about two minutes.
+#
+# The website checks these files before publishing. If something is missing
+# or wrong (a course with no name, a news message with no "show until" date),
+# the update is refused and the live site stays as it was. The reason appears
+# under the repository's Actions tab on GitHub.
+#
+# If you add a field here, add it to the matching reader in src/data/ too
+# (courses.ts, site.ts or news.ts), or the website will ignore it.
+
+content:
+  - name: courses
+    label: Courses
+    type: file
+    path: src/content/courses.json
+    format: json
+    fields:
+      - name: courses
+        label: Courses
+        description: The order here is the order on the website. Drag to reorder.
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}"
+        fields:
+          - name: name
+            label: Course name
+            type: string
+            required: true
+            description: As students know it, e.g. "TNPSC Group 4".
+
+          - name: showOnWebsite
+            label: Show on website
+            type: boolean
+            default: true
+            description: Untick to hide this course everywhere without deleting it.
+
+          - name: showOnHomePage
+            label: Show on home page
+            type: boolean
+            default: false
+            description: Tick up to four courses for the home page. If none are ticked, the first four are shown.
+
+          - name: target
+            label: Leads to (posts)
+            type: string
+            required: true
+            description: e.g. "Junior Assistant, Typist, Bill Collector".
+
+          - name: duration
+            label: Duration
+            type: string
+            required: true
+            description: e.g. "3 months" or "6 months (Prelims)".
+
+          - name: startDate
+            label: Next batch starts (optional)
+            type: date
+            default: ""
+            options:
+              format: yyyy-MM-dd
+            description: Shown after the duration as "starting 21 October 2026". Clear it once the batch has started if you no longer want it shown.
+
+          - name: summary
+            label: Short description
+            type: text
+            required: true
+            description: Two or three sentences shown on the course card and at the top of the course page.
+
+          - name: highlights
+            label: What the course covers
+            type: string
+            list: true
+            description: One point per line, shown as a ticked list on the course page.
+
+          - name: icon
+            label: Icon
+            type: select
+            default: document
+            options:
+              values:
+                - name: emblem
+                  label: Government emblem
+                - name: pillar
+                  label: Government building
+                - name: people
+                  label: Group of people
+                - name: document
+                  label: Document
+                - name: ledger
+                  label: Register book
+                - name: bank
+                  label: Bank card
+                - name: shield
+                  label: Police shield
+                - name: badge
+                  label: Medal
+                - name: star
+                  label: Star
+                - name: wings
+                  label: Aircraft
+
+          - name: colour
+            label: Icon colour
+            type: select
+            default: navy
+            options:
+              values:
+                - name: navy
+                  label: Blue
+                - name: green
+                  label: Green
+                - name: violet
+                  label: Purple
+                - name: gold
+                  label: Gold
+                - name: teal
+                  label: Teal
+                - name: rose
+                  label: Red
+
+          - name: slug
+            label: Web address (advanced)
+            type: string
+            pattern:
+              regex: "^[a-z0-9-]*$"
+              message: Use only small letters, numbers and dashes, e.g. tnpsc-group-4
+            description: The part after /courses/ in the page address. Leave existing ones alone, since changing it breaks links people have shared. For a new course, leave it blank and it is made from the name.
+
+  - name: settings
+    label: Fees & timetable
+    type: file
+    path: src/content/settings.json
+    format: json
+    fields:
+      - name: feePerMonth
+        label: Monthly fee (₹)
+        type: number
+        required: true
+        options:
+          min: 0
+        description: Numbers only, e.g. 1500. Shown as ₹1500 on every page.
+
+      - name: openDays
+        label: Days the Academy is open
+        type: select
+        required: true
+        options:
+          multiple: true
+          min: 1
+          values: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
+        description: The timetable page, "6 days a week" and "Monday to Saturday" all follow these.
+
+      - name: libraryHours
+        label: Library & self-study hours
+        type: string
+        required: true
+        description: e.g. "10:00 AM – 1:00 PM".
+
+      - name: classHours
+        label: Coaching class hours
+        type: string
+        required: true
+        description: e.g. "2:00 PM – 5:00 PM".
+
+  - name: news
+    label: News strip (home page)
+    type: file
+    path: src/content/news.json
+    format: json
+    fields:
+      - name: items
+        label: Messages
+        description: These scroll across the top of the home page. Each one disappears by itself after its "Show until" date. With no current messages, the strip is hidden.
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{message} (until {showUntil})"
+        fields:
+          - name: message
+            label: Message
+            type: string
+            required: true
+            description: e.g. "New TNPSC Group 4 batch — admissions open". Keep it to one short line.
+
+          - name: startDate
+            label: Starts on (optional)
+            type: date
+            default: ""
+            options:
+              format: yyyy-MM-dd
+            description: Shown as a "Starts 3 Nov 2026" tag after the message.
+
+          - name: fee
+            label: Fee per month in ₹ (optional)
+            type: number
+            options:
+              min: 0
+            description: Shown as a "₹1500 / month" tag. Leave empty for no fee tag.
+
+          - name: link
+            label: Clicking the message opens
+            type: select
+            default: apply
+            options:
+              values:
+                - name: apply
+                  label: Apply for Admission page
+                - name: courses
+                  label: Courses page
+                - name: contact
+                  label: Contact page
+                - name: none
+                  label: Nothing (not clickable)
+
+          - name: showUntil
+            label: Show until
+            type: date
+            required: true
+            options:
+              format: yyyy-MM-dd
+            description: The last day the message appears.

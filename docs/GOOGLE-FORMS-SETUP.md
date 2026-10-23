@@ -27,7 +27,7 @@ you start.
 
 `docs/create-google-forms.gs` creates both forms with exactly the right
 questions and options, links each to its own spreadsheet, and prints the block
-to paste into the website. It avoids typing errors in the checkbox options,
+to paste into the website. It avoids typing errors in the answer options,
 which are the most common reason answers go missing.
 
 1. Signed in as `tacse.chitharal@gmail.com`, go to
@@ -71,8 +71,8 @@ Parts 1 to 4. The result is the same.
 1. Go to <https://forms.google.com> and click **Blank form**.
 2. Title it: **Thiruvalluvar Academy – Online Application for Admission**
 3. Add the questions below, in this order. The **type** matters; the exact
-   wording of the title does not, except for the checkbox options in question 9,
-   which must match the website character for character.
+   wording of the title does not. Dropdown and multiple-choice options must
+   match the website character for character.
 
 | # | Question title | Type | Required | Notes |
 |---|---|---|---|---|
@@ -84,7 +84,7 @@ Parts 1 to 4. The result is the same.
 | 6 | Father / Mother / Guardian Name | Short answer | Yes | |
 | 7 | Parent / Guardian Mobile Number | Short answer | No | |
 | 8 | Employment Status of Parent / Guardian | Short answer | Yes | |
-| 9 | Coaching Required For | Checkboxes | Yes | Options below |
+| 9 | Coaching Required For | Paragraph | Yes | Not checkboxes — see below |
 | 10 | Fee Concession Requested? | Multiple choice | Yes | `No`, `Yes` |
 | 11 | Reason for the fee concession request | Paragraph | No | |
 
@@ -97,21 +97,12 @@ Post Graduate Degree
 Other
 ```
 
-**Question 9 options** — type these exactly. They must match `formValue` in
-`src/data/courses.ts`, or Google silently discards the answer:
-
-```
-UPSC (Civil Services)
-SSC (Staff Selection Central Services)
-Banking Services
-TNPSC Group 1
-TNPSC Group 2
-TNPSC Group 4
-TNPSC Group VAO
-TNUSRB Sub-Inspector of Police
-Police Constable
-NDA (Army / Navy / Airforce)
-```
+**Question 9 is a Paragraph question on purpose.** The website shows the
+courses as checkboxes, then sends the ticked ones to Google as one line of
+text, e.g. `UPSC Civil Services, TNPSC Group 4`. Courses are added, renamed
+and removed in the admin dashboard; because this question accepts any text,
+the Google Form never needs changing when they are. (A Checkboxes question
+would silently drop any course name it did not already list.)
 
 > **Do not make any question "required" in Google itself.** The website already
 > checks required fields before sending, with friendlier messages in context.
@@ -266,8 +257,8 @@ but not what Google *did* with it. This is why:
 **If you change a question in the Google Form.** Editing a question's *wording*
 is safe. Deleting a question and adding a new one gives it a **new entry
 number** — you must update `src/config/google-forms.ts` to match, or that
-answer will stop arriving. Adding or removing a checkbox option means updating
-`formValue` in `src/data/courses.ts` too.
+answer will stop arriving. Never change "Coaching Required For" back to
+Checkboxes: courses added in the dashboard would then be silently dropped.
 
 **Keep the responses private.** Do not share the spreadsheet link publicly. It
 contains Aadhaar numbers, addresses and family circumstances. Share it only

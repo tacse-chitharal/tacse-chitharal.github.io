@@ -111,6 +111,17 @@ function buildPayload(form: HTMLFormElement): URLSearchParams {
     params.append(key, value);
   }
 
+  // A checkbox group marked data-join-entry is sent as ONE text answer,
+  // "UPSC Civil Services, TNPSC Group 4". The Google Form question behind it
+  // is a plain text question, so courses added or renamed in the admin
+  // dashboard are accepted without anyone touching the Google Form.
+  for (const group of form.querySelectorAll<HTMLElement>('[data-join-entry]')) {
+    const entry = group.dataset.joinEntry ?? '';
+    if (!entry.startsWith('entry.')) continue;
+    const chosen = [...group.querySelectorAll<HTMLInputElement>('input:checked')].map((box) => box.value);
+    if (chosen.length) params.append(entry, chosen.join(', '));
+  }
+
   return params;
 }
 

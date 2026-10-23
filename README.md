@@ -59,23 +59,41 @@ local builds.
 
 ## Changing the content later
 
-Almost everything the Academy will want to change lives in two files, both
-written as plain lists with comments. Neither requires knowing how the site is
-built.
+### The admin dashboard (no code)
+
+Fees, timetable, courses and the home-page news strip are edited in the admin
+dashboard at **<https://app.pagescms.org>**, signed in with the TACSE GitHub
+account. It is a separate site; nothing about it is part of the public website.
+
+| In the dashboard | Changes |
+|---|---|
+| **Courses** | Add, remove, reorder or hide courses; names, durations, next start date, description, what each covers, icon; which appear on the home page |
+| **Fees & timetable** | Monthly fee, days open, library hours, class hours |
+| **News strip** | The scrolling messages on the home page, each with an optional start date and fee, and a "show until" date after which it disappears by itself |
+
+Each Save publishes in about two minutes. The dashboard writes to
+`src/content/*.json`; the layout of the dashboard is set in `.pages.yml`.
+
+**A bad save cannot break the live site.** Before publishing, the build checks
+the data (every course has a name, duration and description; no two courses
+share a web address; every news message has a "show until" date…). If anything
+is wrong the update is refused, the live site stays as it was, and the reason
+is shown in plain words under the repository's **Actions** tab.
+
+### In the code
 
 | What you want to change | File |
 |---|---|
-| Phone, e-mail, address, timings, fee | `src/data/site.ts` |
-| The ten programmes — names, durations, descriptions | `src/data/courses.ts` |
-| Which four programmes appear on the home page | `featuredCourseIds` in `src/data/courses.ts` |
+| Phone, e-mail, address | `src/data/site.ts` |
 | The navigation menu | `nav` in `src/data/site.ts` |
 | The Thirukkural couplets | `kurals` in `src/data/site.ts` |
 | Google Form identifiers | `src/config/google-forms.ts` |
+| What the dashboard shows | `.pages.yml` (and the matching reader in `src/data/`) |
 
-Adding a programme to `src/data/courses.ts` automatically creates its page,
-adds it to the courses table, the footer and the application form's checkboxes.
-If you add one, add the matching checkbox option to the Google Form as well —
-see the setup guide.
+A course added in the dashboard automatically gets its own page and appears in
+the courses table, the footer and the application form. The Google Form needs
+no change: "Coaching Required For" is a text question that accepts any course
+name.
 
 ### Photographs
 

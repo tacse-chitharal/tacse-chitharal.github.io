@@ -1,224 +1,140 @@
 /**
- * The ten coaching programmes offered by the Academy.
+ * The coaching programmes, as the rest of the site uses them.
  *
- * The order here is the order shown on the Courses page, on the home page
- * and in the "Coaching required for" checkboxes on the application form,
- * so add or remove a programme in one place and the whole site follows.
+ * The content itself lives in src/content/courses.json, which the admin
+ * dashboard (Pages CMS) edits. This module reads that file, checks it, and
+ * fills in anything derived — the web address, the start-date wording — so a
+ * page never has to.
  *
- * `formValue` MUST match the checkbox option text in the Google Form exactly,
- * character for character, or Google silently drops the answer.
+ * If the file has a problem, the build stops here with a message naming the
+ * course and the field. On GitHub that means the deploy fails and the live
+ * site stays exactly as it was, rather than going up broken.
  */
+import data from '../content/courses.json';
+import { formatDateLong, isIsoDate, slugify } from '../lib/format';
+
+export const courseIcons = [
+  'emblem', 'pillar', 'people', 'document', 'ledger', 'bank', 'shield', 'badge', 'star', 'wings',
+] as const;
+export const courseColours = ['navy', 'green', 'violet', 'gold', 'teal', 'rose'] as const;
 
 export type Course = {
+  /** The web address part: /courses/<id>/ */
   id: string;
   name: string;
-  line1: string;
-  line2: string;
   target: string;
+  /** What visitors read, e.g. "3 months, starting 21 October 2026". */
   duration: string;
-  icon: 'emblem' | 'pillar' | 'people' | 'document' | 'ledger' | 'bank' | 'shield' | 'badge' | 'star' | 'wings';
-  accent: 'navy' | 'green' | 'violet' | 'gold' | 'teal' | 'rose';
+  /** The duration on its own, e.g. "3 months". */
+  length: string;
+  /** YYYY-MM-DD, or empty. */
+  startDate: string;
+  featured: boolean;
+  icon: (typeof courseIcons)[number];
+  accent: (typeof courseColours)[number];
   summary: string;
   highlights: string[];
-  formValue: string;
 };
 
-export const courses: Course[] = [
-  {
-    id: 'upsc',
-    name: 'UPSC Civil Services',
-    line1: 'UPSC',
-    line2: 'Civil Services',
-    target: 'IAS / IPS / IFS / Civil Services',
-    duration: '6 months (Prelims)',
-    icon: 'emblem',
-    accent: 'navy',
-    summary:
-      'Structured preparation for the Civil Services Preliminary Examination, built for first-generation aspirants who are starting from the NCERT foundation.',
-    highlights: [
-      'General Studies Paper I & CSAT coverage from the ground up',
-      'NCERT foundation classes before standard reference books',
-      'Current affairs discussion every class, drawn from the daily newspaper',
-      'Fortnightly full-length prelims mock tests with answer-key discussion',
-    ],
-    formValue: 'UPSC (Civil Services)',
-  },
-  {
-    id: 'ssc',
-    name: 'SSC – Staff Selection Commission',
-    line1: 'SSC',
-    line2: 'Central Services',
-    target: 'Staff Selection Commission Central Services',
-    duration: '3 to 6 months',
-    icon: 'document',
-    accent: 'teal',
-    summary:
-      'Coaching for SSC CGL, CHSL and allied central government posts, with the quantitative aptitude and reasoning drilling these papers reward.',
-    highlights: [
-      'Quantitative aptitude and reasoning practice in every session',
-      'English comprehension and grammar for candidates from Tamil-medium schools',
-      'General awareness capsules revised fortnightly',
-      'Speed and accuracy drills under exam time limits',
-    ],
-    formValue: 'SSC (Staff Selection Central Services)',
-  },
-  {
-    id: 'banking',
-    name: 'Banking Services',
-    line1: 'Banking',
-    line2: 'Services',
-    target: 'IBPS / SBI PO & Clerk, RRB',
-    duration: '3 to 6 months',
-    icon: 'bank',
-    accent: 'green',
-    summary:
-      'Preparation for IBPS and SBI Probationary Officer and Clerk recruitment, along with Regional Rural Bank examinations.',
-    highlights: [
-      'Banking and financial awareness updated with every policy change',
-      'Data interpretation and puzzle-solving practice sets',
-      'Sectional timing strategy for prelims and mains',
-      'Descriptive paper and interview preparation for PO aspirants',
-    ],
-    formValue: 'Banking Services',
-  },
-  {
-    id: 'tnpsc-group-1',
-    name: 'TNPSC Group 1',
-    line1: 'TNPSC',
-    line2: 'Group 1',
-    target: 'Deputy Collector, DSP, Commercial Tax Officer, etc.',
-    duration: '6 months',
-    icon: 'pillar',
-    accent: 'green',
-    summary:
-      'The Academy’s most intensive programme, aimed at the Deputy Collector, Deputy Superintendent of Police and Commercial Tax Officer cadres.',
-    highlights: [
-      'Complete Tamil Nadu State Board syllabus coverage, Standards 6 to 12',
-      'Tamil Nadu history, polity, geography and economy in depth',
-      'Mains answer-writing practice with individual written feedback',
-      'Interview and personality test guidance for candidates who clear mains',
-    ],
-    formValue: 'TNPSC Group 1',
-  },
-  {
-    id: 'tnpsc-group-2',
-    name: 'TNPSC Group 2 & 2A',
-    line1: 'TNPSC',
-    line2: 'Group 2 & 2A',
-    target: 'Sub-Registrar, Municipal Commissioner, Assistants',
-    duration: '3 months',
-    icon: 'people',
-    accent: 'violet',
-    summary:
-      'Preparation for the Group 2 and Group 2A interposts and non-interposts, covering both the preliminary and main written examinations.',
-    highlights: [
-      'General studies and aptitude as per the current TNPSC syllabus',
-      'Tamil eligibility test preparation',
-      'Descriptive paper practice for the Group 2 mains',
-      'Previous-year question paper analysis, year by year',
-    ],
-    formValue: 'TNPSC Group 2',
-  },
-  {
-    id: 'tnpsc-group-4',
-    name: 'TNPSC Group 4',
-    line1: 'TNPSC',
-    line2: 'Group 4',
-    target: 'Junior Assistant, Typist, Bill Collector',
-    duration: '3 months, starting 21 October 2026',
-    icon: 'ledger',
-    accent: 'gold',
-    summary:
-      'The most accessible entry point into state government service, open to candidates who have completed higher secondary education.',
-    highlights: [
-      'General studies from Samacheer Kalvi textbooks',
-      'Aptitude and mental ability shortcuts for the objective paper',
-      'General Tamil / General English paper preparation',
-      'Weekly revision tests on the chapters covered',
-    ],
-    formValue: 'TNPSC Group 4',
-  },
-  {
-    id: 'tnpsc-vao',
-    name: 'TNPSC VAO',
-    line1: 'TNPSC',
-    line2: 'Village Administrative Officer',
-    target: 'Village Administrative Officer',
-    duration: '3 months',
-    icon: 'document',
-    accent: 'gold',
-    summary:
-      'Focused coaching for the Village Administrative Officer post, including the rural administration component unique to this examination.',
-    highlights: [
-      'Village administration, land records and revenue basics',
-      'General studies shared with the Group 4 syllabus',
-      'Tamil language paper preparation',
-      'Fortnightly mock tests in the VAO question pattern',
-    ],
-    formValue: 'TNPSC Group VAO',
-  },
-  {
-    id: 'tnusrb-si',
-    name: 'TNUSRB Sub-Inspector of Police',
-    line1: 'TNUSRB',
-    line2: 'Sub-Inspector of Police',
-    target: 'Sub-Inspector of Police (SI)',
-    duration: '3 months',
-    icon: 'shield',
-    accent: 'navy',
-    summary:
-      'Written examination coaching for the Tamil Nadu Uniformed Services Recruitment Board Sub-Inspector posts, with guidance on the physical and endurance stages.',
-    highlights: [
-      'General knowledge, psychology and aptitude papers',
-      'Tamil Nadu police administration and current affairs',
-      'Guidance on physical efficiency test standards and preparation',
-      'Viva voce and certificate verification briefing',
-    ],
-    formValue: 'TNUSRB Sub-Inspector of Police',
-  },
-  {
-    id: 'police-constable',
-    name: 'Police Constable',
-    line1: 'Police',
-    line2: 'Constable (Grade II)',
-    target: 'Tamil Nadu Uniformed Services Grade II Constable',
-    duration: '3 months',
-    icon: 'badge',
-    accent: 'teal',
-    summary:
-      'Preparation for Grade II Police Constable, Jail Warder and Firemen recruitment conducted by TNUSRB.',
-    highlights: [
-      'General knowledge and psychology paper coaching',
-      'Simple arithmetic and reasoning practice',
-      'Physical measurement and endurance test guidance',
-      'Previous-year papers solved in class',
-    ],
-    formValue: 'Police Constable',
-  },
-  {
-    id: 'nda',
-    name: 'National Defence Academy (NDA)',
-    line1: 'NDA',
-    line2: 'Army / Navy / Air Force',
-    target: 'Army / Navy / Air Force Wings',
-    duration: '3 months',
-    icon: 'wings',
-    accent: 'rose',
-    summary:
-      'For higher secondary students aiming at a commission through the National Defence Academy, covering the written examination and the SSB interview.',
-    highlights: [
-      'Mathematics paper coverage at the Standard 11 and 12 level',
-      'General Ability Test: English, physics, chemistry and general awareness',
-      'Introduction to the SSB five-day selection process',
-      'Officer Like Qualities and personal interview preparation',
-    ],
-    formValue: 'NDA (Army / Navy / Airforce)',
-  },
-];
+type RawCourse = {
+  name?: unknown;
+  slug?: unknown;
+  target?: unknown;
+  duration?: unknown;
+  startDate?: unknown;
+  showOnWebsite?: unknown;
+  showOnHomePage?: unknown;
+  icon?: unknown;
+  colour?: unknown;
+  summary?: unknown;
+  highlights?: unknown;
+};
 
-/** The four programmes featured on the home page. */
-export const featuredCourseIds = ['upsc', 'tnpsc-group-1', 'tnpsc-group-2', 'tnpsc-group-4'];
+const text = (value: unknown) => (typeof value === 'string' ? value.trim() : '');
 
-export const featuredCourses = featuredCourseIds
-  .map((id) => courses.find((course) => course.id === id))
-  .filter((course): course is Course => Boolean(course));
+function loadCourses(): Course[] {
+  const raw = (data as { courses?: RawCourse[] }).courses;
+  const problems: string[] = [];
+
+  if (!Array.isArray(raw)) {
+    throw new Error('src/content/courses.json must contain a "courses" list.');
+  }
+
+  const seen = new Map<string, string>();
+  const courses: Course[] = [];
+
+  raw.forEach((item, index) => {
+    const name = text(item.name);
+    const where = name ? `Course "${name}"` : `Course number ${index + 1}`;
+
+    // A course switched off in the dashboard is skipped entirely: no page,
+    // no card, no checkbox on the application form.
+    if (item.showOnWebsite === false) return;
+
+    if (!name) problems.push(`${where} has no name.`);
+
+    const id = slugify(text(item.slug) || name);
+    if (!id) problems.push(`${where} needs a name made of letters or numbers.`);
+    else if (seen.has(id)) {
+      problems.push(`${where} and "${seen.get(id)}" would share the web address /courses/${id}/. Give one of them a different name or web address.`);
+    } else seen.set(id, name);
+
+    const target = text(item.target);
+    if (!target) problems.push(`${where} is missing "Leads to (posts)".`);
+
+    const length = text(item.duration);
+    if (!length) problems.push(`${where} is missing its duration.`);
+
+    const startDate = text(item.startDate);
+    if (startDate && !isIsoDate(startDate)) problems.push(`${where} has a start date that is not a real date: "${startDate}".`);
+
+    const summary = text(item.summary);
+    if (!summary) problems.push(`${where} is missing its summary.`);
+
+    const highlights = Array.isArray(item.highlights)
+      ? item.highlights.map(text).filter(Boolean)
+      : [];
+
+    // Unknown or blank icon / colour falls back quietly: a cosmetic choice
+    // should never take the website down.
+    const icon = courseIcons.find((i) => i === item.icon) ?? 'document';
+    const accent = courseColours.find((c) => c === item.colour) ?? 'navy';
+
+    courses.push({
+      id,
+      name,
+      target,
+      length,
+      startDate,
+      duration: startDate && isIsoDate(startDate) ? `${length}, starting ${formatDateLong(startDate)}` : length,
+      featured: item.showOnHomePage === true,
+      icon,
+      accent,
+      summary,
+      highlights,
+    });
+  });
+
+  if (courses.length === 0 && problems.length === 0) {
+    problems.push('Every course is switched off. At least one course must show on the website.');
+  }
+
+  if (problems.length) {
+    throw new Error(
+      `The courses in the admin dashboard need fixing before the website can update:\n  - ${problems.join('\n  - ')}`,
+    );
+  }
+
+  return courses;
+}
+
+export const courses: Course[] = loadCourses();
+
+/**
+ * The programmes on the home page: those ticked "Show on home page", or the
+ * first four if none are, so the section is never empty.
+ */
+export const featuredCourses: Course[] = (() => {
+  const picked = courses.filter((course) => course.featured);
+  return picked.length ? picked : courses.slice(0, 4);
+})();

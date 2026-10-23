@@ -9,7 +9,7 @@ import { schedule, site } from '../data/site';
 
 <BaseLayout
   title="Contact"
-  description={`Reach the Thiruvalluvar Academy for Civil Service Exam in ${site.location}. Open six days a week, library 10 AM to 1 PM and classes 2 PM to 5 PM.`}
+  description={`Reach the ${site.name} in ${site.location}. Open ${schedule.days.toLowerCase()}, library ${schedule.library.time} and classes ${schedule.classes.time}.`}
 >
   <PageHeader
     eyebrow="Contact"
@@ -48,7 +48,7 @@ import { schedule, site } from '../data/site';
                 <a class="mt-1 block text-sm text-ink-soft hover:text-navy-700" href={site.phoneHref}>
                   {site.phone}
                 </a>
-                <p class="mt-1 text-xs text-ink-soft">Answered between 10 AM and 5 PM</p>
+                <p class="mt-1 text-xs text-ink-soft">Answered during Academy hours</p>
               </div>
             </li>
 
@@ -74,7 +74,7 @@ import { schedule, site } from '../data/site';
               <div>
                 <p class="text-sm font-semibold text-navy-700">When we are open</p>
                 <p class="mt-1 text-sm leading-relaxed text-ink-soft">
-                  {schedule.days}, Monday to Saturday<br />
+                  {schedule.days}, {schedule.dayRange}<br />
                   {schedule.library.label}: {schedule.library.time}<br />
                   {schedule.classes.label}: {schedule.classes.time}
                 </p>
