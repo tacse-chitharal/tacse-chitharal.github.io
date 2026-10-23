@@ -25,7 +25,7 @@ const related = courses.filter((item) => item.id !== course.id && item.accent ==
 
 <BaseLayout
   title={course.name}
-  description={`${course.name} coaching in Chitharal — ${course.target}. Duration ${course.duration}, ₹500 per month, six days a week with fortnightly mock tests.`}
+  description={`${course.name} coaching in Chitharal — ${course.target}. Duration ${course.duration}, ${schedule.fee} per month, six days a week with fortnightly mock tests.`}
 >
   <PageHeader eyebrow="Coaching Programme" title={course.name} description={course.summary} />
 

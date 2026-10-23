@@ -125,7 +125,7 @@ export const courses: Course[] = [
     line1: 'TNPSC',
     line2: 'Group 4',
     target: 'Junior Assistant, Typist, Bill Collector',
-    duration: '3 months commencing from tomorrow 21-10-2026',
+    duration: '3 months, starting 21 October 2026',
     icon: 'ledger',
     accent: 'gold',
     summary:

@@ -6,16 +6,17 @@ import SectionHeading from '../../components/SectionHeading.astro';
 import CourseCard from '../../components/CourseCard.astro';
 import Icon from '../../components/Icon.astro';
 import { courses } from '../../data/courses';
+import { schedule } from '../../data/site';
 ---
 
 <BaseLayout
   title="Coaching Programmes"
-  description="Ten competitive examination programmes — UPSC, SSC, Banking, TNPSC Groups 1, 2, 4 and VAO, TNUSRB Sub-Inspector, Police Constable and NDA — taught in Chitharal for ₹500 a month."
+  description={`Ten competitive examination programmes — UPSC, SSC, Banking, TNPSC Groups 1, 2, 4 and VAO, TNUSRB Sub-Inspector, Police Constable and NDA — taught in Chitharal for ${schedule.fee} a month.`}
 >
   <PageHeader
     eyebrow="Coaching Programmes"
     title="Ten examination pathways into public service"
-    description="Every programme is taught from the foundation upwards, six days a week, with a mock test every fortnight. The fee is the same ₹500 a month whichever you choose, and whichever combination you choose."
+    description={`Every programme is taught from the foundation upwards, six days a week, with a mock test every fortnight. The fee is the same ${schedule.fee} a month whichever you choose, and whichever combination you choose.`}
   />
 
   <!-- At a glance -->
